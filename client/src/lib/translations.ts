@@ -74,10 +74,19 @@ export const translations = {
     applyToEditor: "Aplicar no Editor",
     codeApplied: "Código aplicado no editor com sucesso.",
     
-    // Atalhos
-    saveShortcut: "Ctrl+S para salvar",
-    saveAllShortcut: "Ctrl+Shift+S para salvar tudo",
-    closeTabShortcut: "Ctrl+W para fechar aba"
+    // Performance
+    autoSaveEnabled: "Salvamento automático ativado",
+    performanceMode: "Modo Performance",
+    quickActions: "Ações Rápidas",
+    
+    // Shortcuts
+    keyboardShortcuts: "Atalhos do Teclado",
+    saveShortcut: "Ctrl+S - Salvar arquivo",
+    closeTabShortcut: "Ctrl+W - Fechar aba",
+    
+    autoSaveInterval: "Salvamento automático ativo (30s)",
+    unsavedChanges: "Alterações não salvas",
+    performanceOptimized: "Interface otimizada para performance"
   },
   
   en: {
@@ -154,10 +163,19 @@ export const translations = {
     applyToEditor: "Apply to Editor",
     codeApplied: "Code applied to editor successfully.",
     
+    // Performance
+    autoSaveEnabled: "Auto-save enabled",
+    performanceMode: "Performance Mode",
+    quickActions: "Quick Actions",
+    
     // Shortcuts
-    saveShortcut: "Ctrl+S to save",
-    saveAllShortcut: "Ctrl+Shift+S to save all",
-    closeTabShortcut: "Ctrl+W to close tab"
+    keyboardShortcuts: "Keyboard Shortcuts",
+    saveShortcut: "Ctrl+S - Save file",
+    closeTabShortcut: "Ctrl+W - Close tab",
+    
+    autoSaveInterval: "Auto-save active (30s)",
+    unsavedChanges: "Unsaved changes", 
+    performanceOptimized: "Interface optimized for performance"
   }
 };
 

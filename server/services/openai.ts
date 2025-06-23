@@ -51,30 +51,32 @@ export async function analyzeCode(code: string, language: string = "javascript")
 export async function chatWithAI(message: string, context?: string): Promise<ChatResponse> {
   try {
     const systemMessage = context 
-      ? `Você é um assistente de programação IA em português. Ajude com análise de código, debugging e sugestões. Quando fornecer código, inclua sempre snippets funcionais que podem ser copiados. Contexto atual: ${context}`
-      : "Você é um assistente de programação IA em português. Ajude com análise de código, debugging e sugestões. Quando fornecer código, inclua sempre snippets funcionais que podem ser copiados.";
+      ? `Você é um assistente de programação IA em português. Ajude com análise de código, debugging e sugestões. Sempre forneça respostas práticas e aplicáveis. Contexto: ${context}`
+      : "Você é um assistente de programação IA em português. Ajude com análise de código, debugging e sugestões. Seja conciso e prático.";
 
     const response = await openai.chat.completions.create({
+      // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
       model: "gpt-4o",
       messages: [
         {
           role: "system",
-          content: systemMessage + "\n\nSempre que fornecer código, inclua um snippet completo e funcional que pode ser aplicado diretamente."
+          content: systemMessage + "\n\nQuando fornecer código, sempre inclua dentro de blocos ```codigo``` para que possa ser aplicado automaticamente no editor."
         },
         {
           role: "user",
           content: message
         }
       ],
-      max_tokens: 1500,
+      max_tokens: 1200,
+      temperature: 0.7,
     });
 
     const content = response.choices[0].message.content || "Desculpe, não consegui processar sua solicitação.";
     
     // Extrair snippet de código se houver
-    const codeBlockRegex = /```[\w]*\n([\s\S]*?)\n```/g;
+    const codeBlockRegex = /```(?:[\w]*\n)?([\s\S]*?)\n```/g;
     const codeMatch = codeBlockRegex.exec(content);
-    const codeSnippet = codeMatch ? codeMatch[1] : null;
+    const codeSnippet = codeMatch ? codeMatch[1].trim() : null;
 
     return {
       message: content,

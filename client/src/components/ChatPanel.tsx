@@ -62,6 +62,14 @@ export function ChatPanel({ activeFile, onCodeEdit }: ChatPanelProps) {
     }
   }, []);
 
+  // Auto-scroll para a última mensagem
+  useEffect(() => {
+    const container = document.querySelector('.messages-container');
+    if (container) {
+      container.scrollTop = container.scrollHeight;
+    }
+  }, [localMessages]);
+
   // Load chat messages (mantido para compatibilidade, mas usamos localStorage)
   const { data: messages = [], isLoading } = useQuery({
     queryKey: ["/api/chat/messages"],

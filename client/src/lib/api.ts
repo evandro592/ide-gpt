@@ -1,10 +1,26 @@
 export const API_BASE_URL = import.meta.env.VITE_API_URL || "";
 
+// Simple in-memory cache
+const cache = new Map<string, { data: any; timestamp: number }>();
+const CACHE_TTL = 30000; // 30 seconds
+
 export async function apiCall(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<Response> {
   const url = `${API_BASE_URL}${endpoint}`;
+  const cacheKey = `${options.method || 'GET'}_${endpoint}`;
+  
+  // Check cache for GET requests
+  if (!options.method || options.method === 'GET') {
+    const cached = cache.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+      return new Response(JSON.stringify(cached.data), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+  }
   
   const defaultOptions: RequestInit = {
     headers: {
@@ -25,6 +41,16 @@ export async function apiCall(
   if (!response.ok) {
     const errorText = await response.text();
     throw new Error(`API Error ${response.status}: ${errorText}`);
+  }
+
+  // Cache successful GET responses
+  if (response.ok && (!options.method || options.method === 'GET')) {
+    try {
+      const data = await response.clone().json();
+      cache.set(cacheKey, { data, timestamp: Date.now() });
+    } catch {
+      // Skip caching if response is not JSON
+    }
   }
 
   return response;

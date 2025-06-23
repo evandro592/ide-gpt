@@ -118,3 +118,13 @@ Changelog:
   - Added automatic browser opening and system checks
   - Localhost binding for Windows development
   - Complete Windows setup documentation
+- June 23, 2025. Performance and UX optimizations
+  - Implemented API response caching (30-second TTL for better performance)
+  - Added auto-save functionality (every 30 seconds for modified files)
+  - Enhanced keyboard shortcuts (Ctrl+S save, Ctrl+W close tab) with visual feedback
+  - Auto-scroll to bottom in chat when new messages arrive
+  - Added tooltips and accessibility improvements throughout interface
+  - Debounced content changes in code editor to prevent performance issues
+  - Optimized OpenAI API calls with better prompt engineering and temperature settings
+  - Enhanced loading indicators and visual feedback for user actions
+  - Improved code snippet extraction and application from AI responses

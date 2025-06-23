@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { debounce } from "@/utils/debounce";
 import { ResizableLayout } from "@/components/ResizableLayout";
 import { FileTree } from "@/components/FileTree";
 import { CodeEditor } from "@/components/CodeEditor";
@@ -154,16 +155,35 @@ export default function IDE() {
     }
   };
 
+  // Debounce content changes for better performance
+  const debouncedContentChange = useCallback(
+    debounce((content: string) => {
+      if (activeTabIndex >= 0 && openTabs[activeTabIndex]) {
+        setOpenTabs(tabs =>
+          tabs.map((tab, index) =>
+            index === activeTabIndex
+              ? { ...tab, content, modified: tab.content !== content }
+              : tab
+          )
+        );
+      }
+    }, 300),
+    [activeTabIndex, openTabs]
+  );
+
   const handleContentChange = (content: string) => {
+    // Update immediately for visual feedback
     if (activeTabIndex >= 0 && openTabs[activeTabIndex]) {
       setOpenTabs(tabs =>
         tabs.map((tab, index) =>
           index === activeTabIndex
-            ? { ...tab, content, modified: tab.content !== content }
+            ? { ...tab, content, modified: true }
             : tab
         )
       );
     }
+    // Debounce the actual content update
+    debouncedContentChange(content);
   };
 
   const handleCodeEdit = (code: string) => {
