@@ -1,16 +1,17 @@
 @echo off
+setlocal enabledelayedexpansion
 title IDE Application - Servidor Local Windows
 
 echo ========================================
 echo   IDE APPLICATION - SERVIDOR LOCAL
 echo ========================================
 echo.
-echo Verificando sistema...
 
-:: Verificar Node.js
-node --version >nul 2>&1
-if errorlevel 1 (
-    echo ❌ Node.js não encontrado!
+REM Verificar Node.js
+echo Verificando sistema...
+call node --version >nul 2>&1
+if !errorlevel! neq 0 (
+    echo Node.js nao encontrado!
     echo.
     echo Por favor, instale Node.js 18+ de: https://nodejs.org
     echo.
@@ -18,14 +19,19 @@ if errorlevel 1 (
     exit /b 1
 )
 
-echo ✅ Node.js encontrado: 
-node --version
+echo Node.js encontrado:
+call node --version
 
-:: Verificar se dependências estão instaladas
+REM Verificar se dependências estão instaladas
 if not exist "node_modules" (
     echo.
-    echo ⚠️  Dependências não encontradas. Instalando...
-    call install_dependencies.bat
+    echo Dependencias nao encontradas. Instalando...
+    call npm install
+    if !errorlevel! neq 0 (
+        echo Falha na instalacao. Execute install_dependencies.bat
+        pause
+        exit /b 1
+    )
 )
 
 echo.
@@ -33,20 +39,20 @@ echo ========================================
 echo   INICIANDO SERVIDOR LOCAL
 echo ========================================
 echo.
-echo 🚀 Servidor será iniciado em: http://localhost:5000
-echo 📝 Interface em português disponível
-echo 💬 Chat IA integrado (requer chave OpenAI)
-echo 💾 Mensagens salvas localmente no seu PC
+echo Servidor sera iniciado em: http://localhost:5000
+echo Interface em portugues disponivel
+echo Chat IA integrado (requer chave OpenAI)
+echo Mensagens salvas localmente no seu PC
 echo.
-echo ⏹️  Para parar: Ctrl+C
-echo 🌐 Para acessar: http://localhost:5000
+echo Para parar: Ctrl+C
+echo Para acessar: http://localhost:5000
 echo.
 echo ========================================
 
-:: Aguardar 3 segundos e abrir navegador
-timeout /t 3 /nobreak >nul
+REM Aguardar e abrir navegador
+timeout /t 3 /nobreak >nul 2>&1
 start http://localhost:5000
 
-:: Iniciar servidor Windows
+REM Iniciar servidor
 set NODE_ENV=development
-npx tsx server/index.ts
+call npm run dev

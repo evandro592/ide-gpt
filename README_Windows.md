@@ -8,21 +8,29 @@
 
 ## Instalação Rápida
 
+### ⚡ Método Mais Simples
+1. **Baixe/Clone este projeto**
+2. **Duplo-clique**: `quick_start_windows.bat`
+3. **Acesse**: http://localhost:5000
+
+### 🔧 Método Detalhado
 1. **Baixe/Clone este projeto**
 2. **Verifique o sistema**: `check_windows_setup.bat`
 3. **Execute**: `install_dependencies.bat`
 4. **Inicie a aplicação**: `start_app.bat`
 5. **Acesse**: http://localhost:5000
 
-### Solução de Problemas
-Se `start_app.bat` não funcionar:
-- Execute `start_windows_debug.bat` para diagnóstico
-- Verifique se Node.js 18+ está instalado
-- Execute como Administrador se necessário
+### ❗ Solução de Problemas
+Se os scripts não funcionarem:
+- **Execute como Administrador** (clique direito → Executar como administrador)
+- Execute `start_windows_debug.bat` para diagnóstico detalhado
+- Verifique se Node.js 18+ está instalado em https://nodejs.org
+- Certifique-se de estar na pasta correta do projeto
 
 ## Scripts Disponíveis
 
 ### 🚀 Scripts de Execução
+- `quick_start_windows.bat` - **Início rápido** (recomendado)
 - `check_windows_setup.bat` - Verifica configuração do sistema
 - `install_dependencies.bat` - Instala dependências 
 - `start_app.bat` - Inicia servidor de desenvolvimento

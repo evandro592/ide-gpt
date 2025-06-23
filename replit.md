@@ -113,11 +113,12 @@ Changelog:
   - Real-time language switching functionality
   - Settings persistence in localStorage
 - June 23, 2025. Enhanced Windows local server support
-  - Added Windows-specific npm scripts (dev:windows, start:windows)
-  - Enhanced .bat scripts with better error handling and user feedback
-  - Added automatic browser opening and system checks
-  - Localhost binding for Windows development
-  - Complete Windows setup documentation
+  - Added Windows-specific npm scripts and robust .bat files
+  - Fixed Windows batch file execution issues with proper error handling
+  - Added quick_start_windows.bat for one-click setup
+  - Enhanced scripts with setlocal enabledelayedexpansion for reliability
+  - Added comprehensive troubleshooting and debug scripts
+  - Localhost binding for Windows development with automatic browser opening
 - June 23, 2025. Performance and UX optimizations
   - Implemented API response caching (30-second TTL for better performance)
   - Added auto-save functionality (every 30 seconds for modified files)
