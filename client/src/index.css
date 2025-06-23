@@ -1,0 +1,211 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(0, 0%, 100%);
+  --foreground: hsl(20, 14.3%, 4.1%);
+  --muted: hsl(60, 4.8%, 95.9%);
+  --muted-foreground: hsl(25, 5.3%, 44.7%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(20, 14.3%, 4.1%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(20, 14.3%, 4.1%);
+  --border: hsl(20, 5.9%, 90%);
+  --input: hsl(20, 5.9%, 90%);
+  --primary: hsl(207, 90%, 54%);
+  --primary-foreground: hsl(211, 100%, 99%);
+  --secondary: hsl(60, 4.8%, 95.9%);
+  --secondary-foreground: hsl(24, 9.8%, 10%);
+  --accent: hsl(60, 4.8%, 95.9%);
+  --accent-foreground: hsl(24, 9.8%, 10%);
+  --destructive: hsl(0, 84.2%, 60.2%);
+  --destructive-foreground: hsl(60, 9.1%, 97.8%);
+  --ring: hsl(20, 14.3%, 4.1%);
+  --radius: 0.5rem;
+
+  /* VS Code Theme Colors */
+  --vs-bg: hsl(210, 13%, 12%);
+  --vs-surface: hsl(210, 11%, 15%);
+  --vs-panel: hsl(210, 11%, 18%);
+  --vs-border: hsl(210, 13%, 25%);
+  --vs-text: hsl(210, 17%, 82%);
+  --vs-text-muted: hsl(210, 10%, 58%);
+  --vs-accent: hsl(207, 90%, 54%);
+  --vs-accent-hover: hsl(207, 90%, 44%);
+}
+
+.dark {
+  --background: hsl(240, 10%, 3.9%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(240, 3.7%, 15.9%);
+  --muted-foreground: hsl(240, 5%, 64.9%);
+  --popover: hsl(240, 10%, 3.9%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsl(240, 10%, 3.9%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsl(240, 3.7%, 15.9%);
+  --input: hsl(240, 3.7%, 15.9%);
+  --primary: hsl(207, 90%, 54%);
+  --primary-foreground: hsl(211, 100%, 99%);
+  --secondary: hsl(240, 3.7%, 15.9%);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --accent: hsl(240, 3.7%, 15.9%);
+  --accent-foreground: hsl(0, 0%, 98%);
+  --destructive: hsl(0, 62.8%, 30.6%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(240, 4.9%, 83.9%);
+  --radius: 0.5rem;
+
+  /* VS Code Dark Theme Colors */
+  --vs-bg: hsl(210, 13%, 12%);
+  --vs-surface: hsl(210, 11%, 15%);
+  --vs-panel: hsl(210, 11%, 18%);
+  --vs-border: hsl(210, 13%, 25%);
+  --vs-text: hsl(210, 17%, 82%);
+  --vs-text-muted: hsl(210, 10%, 58%);
+  --vs-accent: hsl(207, 90%, 54%);
+  --vs-accent-hover: hsl(207, 90%, 44%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .bg-vs-bg {
+    background-color: var(--vs-bg);
+  }
+  
+  .bg-vs-surface {
+    background-color: var(--vs-surface);
+  }
+  
+  .bg-vs-panel {
+    background-color: var(--vs-panel);
+  }
+  
+  .border-vs-border {
+    border-color: var(--vs-border);
+  }
+  
+  .text-vs-text {
+    color: var(--vs-text);
+  }
+  
+  .text-vs-text-muted {
+    color: var(--vs-text-muted);
+  }
+  
+  .bg-vs-accent {
+    background-color: var(--vs-accent);
+  }
+  
+  .bg-vs-accent-hover {
+    background-color: var(--vs-accent-hover);
+  }
+  
+  .text-vs-accent {
+    color: var(--vs-accent);
+  }
+  
+  .hover\:bg-vs-accent-hover:hover {
+    background-color: var(--vs-accent-hover);
+  }
+
+  .font-interface {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  .font-code {
+    font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
+  }
+}
+
+/* Animation classes */
+.tree-item {
+  transition: all 0.15s ease;
+}
+
+.tree-item:hover {
+  background-color: var(--vs-panel);
+}
+
+.chat-message {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from { 
+    opacity: 0; 
+    transform: translateY(10px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+.tab-active {
+  background-color: var(--vs-bg);
+  border-bottom: 2px solid var(--vs-accent);
+}
+
+/* Monaco Editor styling */
+.monaco-editor {
+  font-family: 'Fira Code', 'Monaco', 'Consolas', monospace !important;
+  line-height: 1.5 !important;
+}
+
+.monaco-editor .view-lines {
+  font-family: 'Fira Code', 'Monaco', 'Consolas', monospace !important;
+}
+
+/* Scrollbar styling for VS Code theme */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--vs-surface);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--vs-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--vs-text-muted);
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--vs-surface);
+}
+
+/* Custom focus styles for VS Code theme */
+.focus\:border-vs-accent:focus {
+  border-color: var(--vs-accent);
+}
+
+.focus\:ring-vs-accent:focus {
+  --tw-ring-color: var(--vs-accent);
+}
+
+/* Resize handle styling */
+.resize-handle {
+  cursor: col-resize;
+  user-select: none;
+  transition: background-color 0.2s ease;
+}
+
+.resize-handle:hover {
+  background-color: var(--vs-accent);
+}
