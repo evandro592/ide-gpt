@@ -118,6 +118,10 @@ body {
 .ide-chat {
   grid-area: chat;
   background: hsl(var(--card));
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
 }
 
 @media (max-width: 1024px) {

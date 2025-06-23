@@ -331,7 +331,7 @@ export default function ChatIA({ projectId, fileId, selectedCode, language }: Ch
       )}
 
       {/* Input - Fixo na parte inferior, sem overlap */}
-      <div className="flex-shrink-0 p-2 border-t border-gray-700 bg-gray-800 sticky bottom-0">
+      <div className="flex-shrink-0 p-2 border-t border-gray-700 bg-gray-800">
         <div className="flex space-x-2">
           <div className="flex-1">
             <textarea
