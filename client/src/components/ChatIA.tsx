@@ -192,7 +192,7 @@ export default function ChatIA({ projectId, fileId, selectedCode, language }: Ch
   };
 
   return (
-    <div className="flex flex-col bg-gray-900 border-l border-gray-700" style={{ height: 'calc(100vh - 22px)' }}>
+    <div className="flex flex-col h-full bg-gray-900 border-l border-gray-700">
       {/* Header - Altura fixa */}
       <div className="flex-shrink-0 p-2 border-b border-gray-700 bg-gray-800">
         <div className="flex items-center space-x-2">
@@ -212,14 +212,7 @@ export default function ChatIA({ projectId, fileId, selectedCode, language }: Ch
       </div>
 
       {/* Messages - Área rolável com altura calculada */}
-      <div 
-        className="flex-1 overflow-y-auto overflow-x-hidden p-2 space-y-2" 
-        style={{ 
-          height: 'calc(100vh - 22px - 100px - 140px)',
-          minHeight: '300px',
-          maxHeight: 'calc(100vh - 22px - 100px - 140px)'
-        }}
-      >
+      <div className="flex-1 overflow-y-auto overflow-x-hidden p-2 space-y-2">
         {messages.map((message) => (
           <div
             key={message.id}
@@ -338,7 +331,7 @@ export default function ChatIA({ projectId, fileId, selectedCode, language }: Ch
       )}
 
       {/* Input - Fixo na parte inferior, sem overlap */}
-      <div className="flex-shrink-0 p-2 border-t border-gray-700 bg-gray-800" style={{ marginBottom: '22px' }}>
+      <div className="flex-shrink-0 p-2 border-t border-gray-700 bg-gray-800 sticky bottom-0">
         <div className="flex space-x-2">
           <div className="flex-1">
             <textarea
