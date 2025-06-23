@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertProjectSchema, insertFileSchema } from "../shared/schema.js";
 import { z } from "zod";
+import path from "path";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Middleware para validação de JSON
@@ -213,6 +214,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       ia: process.env.OPENAI_API_KEY ? 'configurado' : 'não configurado',
       timestamp: new Date().toISOString()
     });
+  });
+
+  // Rota principal que serve a página
+  app.get('/', (req, res) => {
+    res.sendFile(path.join(process.cwd(), 'dist/public/index.html'));
   });
 
   const httpServer = createServer(app);
