@@ -22,6 +22,12 @@ Um IDE completo desenvolvido em português com assistente de IA integrado para d
 5. **Definir origem do CORS** (opcional): ajuste a variável `CORS_ORIGIN` com a URL que poderá acessar a API
 6. **Iniciar IDE**: Execute `INICIAR-IDE.cmd`
 
+Se aparecerem mensagens como `'title' não é reconhecido` ao executar os arquivos
+`.cmd`, converta-os para o formato de final de linha **CRLF** (padrão do
+Windows). Em ambientes Unix ou editores configurados para **LF**, utilize o
+comando `unix2dos` ou re‑salve o arquivo pelo Bloco de Notas antes de rodar o
+script.
+
 ### Iniciando manualmente:
 
 ```bash
