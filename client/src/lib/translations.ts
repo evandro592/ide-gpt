@@ -43,15 +43,14 @@ export const translations = {
     language: "Idioma",
     portuguese: "Português",
     english: "Inglês",
-    fontSize: "Tamanho da Fonte",
     autoSave: "Salvamento Automático",
     
     // Scripts
     generateWindowsScripts: "Gerar Scripts do Windows",
     installDependencies: "Instalar Dependências",
-    startApp: "Iniciar Aplicação",
+    startApp: "Iniciar Aplicação", 
     buildApp: "Compilar Aplicação",
-    generate: "Gerar",
+    generateScript: "Gerar",
     
     // Mensagens
     fileSaved: "Arquivo salvo",
@@ -62,7 +61,7 @@ export const translations = {
     chatCleared: "Chat limpo",
     chatClearedDescription: "Histórico do chat foi limpo.",
     errorSendingMessage: "Erro ao enviar mensagem",
-    noFileSelected: "Nenhum arquivo selecionado",
+    noFileSelectedTitle: "Nenhum arquivo selecionado", 
     noFileSelectedDescription: "Por favor, abra um arquivo para analisar.",
     errorOpeningFile: "Erro ao abrir arquivo",
     
@@ -125,8 +124,8 @@ export const translations = {
     generateWindowsScripts: "Generate Windows Scripts",
     installDependencies: "Install Dependencies",
     startApp: "Start Application",
-    buildApp: "Build Application",
-    generate: "Generate",
+    buildApp: "Build Application", 
+    generateScript: "Generate",
     
     // Messages
     fileSaved: "File saved",
@@ -137,8 +136,8 @@ export const translations = {
     chatCleared: "Chat cleared",
     chatClearedDescription: "Chat history has been cleared.",
     errorSendingMessage: "Error sending message",
-    noFileSelected: "No file selected",
-    noFileSelectedDescription: "Please open a file to analyze.",
+    noFileSelectedTitle: "No file selected",
+    noFileSelectedDescription: "Please open a file to analyze.", 
     errorOpeningFile: "Error opening file",
     
     // Status

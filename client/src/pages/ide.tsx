@@ -317,21 +317,21 @@ export default function IDE() {
                   <Terminal className="text-green-400 h-4 w-4" />
                   <span className="flex-1 text-vs-text">install_dependencies.bat</span>
                   <Button size="sm" className="bg-vs-accent hover:bg-vs-accent-hover">
-                    {t("generate")}
+                    {t("generateScript")}
                   </Button>
                 </div>
                 <div className="flex items-center space-x-3">
                   <Terminal className="text-green-400 h-4 w-4" />
                   <span className="flex-1 text-vs-text">start_app.bat</span>
                   <Button size="sm" className="bg-vs-accent hover:bg-vs-accent-hover">
-                    {t("generate")}
+                    {t("generateScript")}
                   </Button>
                 </div>
                 <div className="flex items-center space-x-3">
                   <Terminal className="text-green-400 h-4 w-4" />
                   <span className="flex-1 text-vs-text">build_app.bat</span>
                   <Button size="sm" className="bg-vs-accent hover:bg-vs-accent-hover">
-                    {t("generate")}
+                    {t("generateScript")}
                   </Button>
                 </div>
               </div>

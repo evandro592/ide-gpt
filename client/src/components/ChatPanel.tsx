@@ -161,7 +161,7 @@ export function ChatPanel({ activeFile }: ChatPanelProps) {
   const handleAnalyzeFile = () => {
     if (!activeFile) {
       toast({
-        title: t("noFileSelected"),
+        title: t("noFileSelectedTitle"),
         description: t("noFileSelectedDescription"),
         variant: "destructive",
       });
