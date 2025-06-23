@@ -90,11 +90,13 @@ Este é um IDE completo em português com capacidades de IA integradas, constru�
 - 23 de junho, 2025: IDE completo implementado em português com:
   - Interface totalmente em português
   - Editor Monaco integrado
-  - Assistente de IA com OpenAI
+  - Assistente de IA com OpenAI FUNCIONANDO
   - Gerenciamento de projetos e arquivos
   - Banco de dados PostgreSQL configurado
   - Scripts para Windows (.cmd) criados
   - Sistema completo de CRUD para projetos e arquivos
+  - IA pode analisar, gerar e editar código automaticamente
+  - Projeto exemplo incluído para testes
 
 # Preferências do Usuário
 
