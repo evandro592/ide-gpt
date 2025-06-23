@@ -94,7 +94,7 @@ body {
   grid-template-areas: 
     "sidebar header header"
     "sidebar editor chat";
-  grid-template-columns: 280px 1fr 350px;
+  grid-template-columns: 280px 1fr 450px;
   grid-template-rows: 60px 1fr;
   gap: 1px;
   background-color: hsl(var(--border));
