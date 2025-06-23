@@ -19,13 +19,17 @@ Um IDE completo desenvolvido em português com assistente de IA integrado para d
 2. **Baixar o projeto**: Clone ou baixe este repositório
 3. **Instalar dependências**: Execute `npm install` no terminal
 4. **Configurar IA** (opcional): Execute `CONFIGURAR-OPENAI.cmd`
-5. **Iniciar IDE**: Execute `INICIAR-IDE.cmd`
+5. **Definir origem do CORS** (opcional): ajuste a variável `CORS_ORIGIN` com a URL que poderá acessar a API
+6. **Iniciar IDE**: Execute `INICIAR-IDE.cmd`
 
 ### Iniciando manualmente:
 
 ```bash
 # Instalar dependências
 npm install
+
+# Definir origem do CORS (opcional)
+export CORS_ORIGIN=http://localhost:3000
 
 # Iniciar o servidor
 tsx server/index.ts
