@@ -1,0 +1,35 @@
+@echo off
+title IDE Português - Iniciando...
+echo.
+echo ========================================
+echo    IDE em Português - Versão 1.0
+echo ========================================
+echo.
+echo Iniciando servidor...
+echo.
+
+rem Verificar se Node.js está instalado
+node --version >nul 2>&1
+if %errorlevel% neq 0 (
+    echo ERRO: Node.js não encontrado!
+    echo Por favor, instale o Node.js em: https://nodejs.org
+    pause
+    exit /b 1
+)
+
+rem Instalar dependências se necessário
+if not exist "node_modules" (
+    echo Instalando dependências...
+    npm install
+    echo.
+)
+
+rem Iniciar o servidor
+echo Servidor iniciando na porta 5000...
+echo.
+echo Acesse: http://localhost:5000
+echo.
+echo Para parar o servidor, pressione Ctrl+C
+echo.
+
+tsx server/index.ts
