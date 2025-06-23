@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 
 interface ChatMessage {
@@ -171,7 +172,7 @@ export default function ChatIA({ projectId, fileId, selectedCode, language }: Ch
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-900 border-l border-gray-700 relative">
+    <div className="flex flex-col h-full bg-gray-900 border-l border-gray-700">
       {/* Header - Altura fixa */}
       <div className="flex-shrink-0 p-3 border-b border-gray-700 bg-gray-800">
         <div className="flex items-center space-x-2">
@@ -196,7 +197,7 @@ export default function ChatIA({ projectId, fileId, selectedCode, language }: Ch
       </div>
 
       {/* Messages - Área rolável principal */}
-      <div className="flex-1 overflow-y-auto p-3 space-y-3 min-h-0" style={{ maxHeight: 'calc(100vh - 200px)' }}>
+      <div className="flex-1 overflow-y-auto px-3 py-2 space-y-3">
         {messages.map((message) => (
           <div
             key={message.id}
@@ -317,8 +318,8 @@ export default function ChatIA({ projectId, fileId, selectedCode, language }: Ch
         </div>
       )}
 
-      {/* Input - Altura fixa na parte inferior */}
-      <div className="flex-shrink-0 p-3 border-t border-gray-700 bg-gray-800 relative z-10">
+      {/* Input - Altura fixa na parte inferior, acima da barra azul */}
+      <div className="flex-shrink-0 p-3 border-t border-gray-700 bg-gray-800" style={{ marginBottom: '22px' }}>
         <div className="flex space-x-2">
           <div className="flex-1">
             <textarea
@@ -335,7 +336,7 @@ export default function ChatIA({ projectId, fileId, selectedCode, language }: Ch
           <button
             onClick={() => handleSendMessage()}
             disabled={!inputValue.trim() || isLoading}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed transition-all text-sm"
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed transition-all text-sm self-start"
           >
             {isLoading ? (
               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
