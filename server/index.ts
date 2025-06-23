@@ -21,20 +21,18 @@ app.use((req, res, next) => {
   next();
 });
 
-// Servir arquivos estáticos em produção
-if (process.env.NODE_ENV === 'production') {
-  const publicPath = path.join(__dirname, 'public');
-  app.use(express.static(publicPath));
-  
-  // Servir index.html para rotas SPA
-  app.get('*', (req, res, next) => {
-    if (req.path.startsWith('/api')) {
-      next();
-    } else {
-      res.sendFile(path.join(publicPath, 'index.html'));
-    }
-  });
-}
+// Servir arquivos estáticos sempre
+const publicPath = path.join(process.cwd(), 'dist/public');
+app.use(express.static(publicPath));
+
+// Servir index.html para rotas SPA
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api')) {
+    next();
+  } else {
+    res.sendFile(path.join(publicPath, 'index.html'));
+  }
+});
 
 // Registrar rotas da API
 registerRoutes(app).then(server => {
