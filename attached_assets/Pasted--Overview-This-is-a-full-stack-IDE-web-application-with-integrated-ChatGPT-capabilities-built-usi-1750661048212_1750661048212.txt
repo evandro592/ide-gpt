@@ -1,0 +1,120 @@
+# Overview
+
+This is a full-stack IDE web application with integrated ChatGPT capabilities, built using React, Express.js, and Drizzle ORM. The application provides a VSCode-like interface with file management, code editing, and AI-powered automation features.
+
+# System Architecture
+
+## Frontend Architecture
+- **Framework**: React 18 with TypeScript
+- **Bundler**: Vite for development and build
+- **UI Library**: Radix UI components with shadcn/ui
+- **Styling**: Tailwind CSS with VSCode-inspired dark theme
+- **State Management**: TanStack Query for server state
+- **Code Editor**: Monaco Editor for syntax highlighting and IntelliSense
+- **Routing**: Wouter for client-side routing
+
+## Backend Architecture
+- **Runtime**: Node.js with Express.js
+- **Language**: TypeScript with ES modules
+- **Database**: PostgreSQL with Drizzle ORM
+- **Authentication**: Session-based (infrastructure ready)
+- **File System**: Native Node.js fs operations with security validation
+- **API**: RESTful endpoints for file operations and chat
+
+## Data Storage Solutions
+- **Database**: PostgreSQL via Neon Database connection
+- **File Storage**: Local file system in `projects` directory
+- **Session Storage**: PostgreSQL with connect-pg-simple
+- **Build Artifacts**: Local dist directory
+
+# Key Components
+
+## File System Management
+- **Security**: Path validation to prevent directory traversal attacks
+- **Operations**: CRUD operations for files and directories
+- **Structure**: Projects stored in isolated `projects` directory
+- **Validation**: Zod schemas for all file operations
+
+## Code Editor Integration
+- **Editor**: Monaco Editor with dynamic import loading
+- **Language Support**: TypeScript, JavaScript, Python, and more
+- **Features**: Syntax highlighting, auto-completion, minimap
+- **Tab Management**: Multiple file tabs with unsaved changes tracking
+
+## AI Integration
+- **Provider**: OpenAI GPT models via official SDK
+- **Features**: Code analysis, automated code generation, chat assistance
+- **Context**: Includes current file and selected code in AI requests
+- **Graceful Degradation**: Works without API key with limited functionality
+
+## Real-time Communication
+- **File Changes**: Automatic query invalidation for real-time updates
+- **Error Handling**: Toast notifications for user feedback
+- **Status Monitoring**: System health checks for dependencies
+
+# Data Flow
+
+1. **User Interaction**: User interacts with React components
+2. **Query Layer**: TanStack Query manages API calls and caching
+3. **API Routes**: Express routes validate requests with Zod schemas
+4. **File Operations**: Secure file system operations with path validation
+5. **AI Processing**: Optional OpenAI integration for code automation
+6. **Response**: JSON responses with proper error handling
+7. **UI Updates**: React components update based on query state
+
+# External Dependencies
+
+## Required Services
+- **Database**: PostgreSQL (configured for Neon Database)
+- **AI Service**: OpenAI API (optional, graceful degradation)
+- **Node.js**: Version 20+ for ES modules and modern features
+
+## Key Libraries
+- **UI**: Radix UI primitives, Lucide icons, Tailwind CSS
+- **Data**: Drizzle ORM, Zod validation, TanStack Query
+- **Editor**: Monaco Editor, React Hook Form
+- **Build**: Vite, esbuild, TypeScript
+
+## Development Tools
+- **Runtime**: tsx for TypeScript execution
+- **Linting**: Built-in TypeScript checking
+- **Database**: Drizzle Kit for migrations
+- **Deployment**: Replit-optimized configuration
+
+# Deployment Strategy
+
+## Replit Configuration
+- **Modules**: Node.js 20, Web, PostgreSQL 16
+- **Build**: Vite build + esbuild for server bundling
+- **Run**: Production mode with optimized serving
+- **Ports**: 5000 internal, 80 external
+
+## Build Process
+1. **Frontend**: Vite builds React app to `dist/public`
+2. **Backend**: esbuild bundles server to `dist/index.js`
+3. **Assets**: Static files served from build directory
+4. **Database**: Drizzle migrations applied automatically
+
+## Environment Variables
+- **DATABASE_URL**: PostgreSQL connection string (required)
+- **OPENAI_API_KEY**: OpenAI API key (optional)
+- **NODE_ENV**: Environment mode (development/production)
+
+## Production Considerations
+- **Static Serving**: Express serves built React app
+- **Error Handling**: Global error middleware with proper status codes
+- **Logging**: Request/response logging for API endpoints
+- **Security**: CORS, input validation, path sanitization
+
+# Changelog
+
+Changelog:
+- June 23, 2025. Initial setup
+- June 23, 2025. Scripts PowerShell criados para Windows:
+  - CONFIGURAR-OPENAI.ps1: Configuração fácil da chave OpenAI
+  - INICIAR-COM-OPENAI.ps1: Início da IDE com verificação OpenAI
+  - TESTE-OPENAI.ps1: Teste completo da configuração OpenAI
+
+# User Preferences
+
+Preferred communication style: Simple, everyday language.
