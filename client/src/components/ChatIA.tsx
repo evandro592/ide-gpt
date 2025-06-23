@@ -1,552 +1,363 @@
+import React, { useState, useRef, useEffect } from 'react';
 
-import { useState, useRef, useEffect } from 'react';
-import { useMutation } from '@tanstack/react-query';
-import { apiRequest } from '@/lib/queryClient';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { 
-  Send, 
-  Bot, 
-  User, 
-  Code, 
-  Sparkles, 
-  AlertCircle, 
-  Copy, 
-  Check,
-  Trash2,
-  RefreshCw,
-  Settings,
-  Zap,
-  FileText,
-  Download,
-  Plus,
-  MessageSquare
-} from 'lucide-react';
-import type { Project, File } from '@shared/schema';
+interface ChatMessage {
+  id: string;
+  content: string;
+  type: 'user' | 'ai';
+  timestamp: Date;
+  codeGenerated?: string;
+  filesModified?: Array<{
+    nome: string;
+    novoConteudo: string;
+  }>;
+  filesCreated?: Array<{
+    nome: string;
+    caminho: string;
+    conteudo: string;
+  }>;
+  actions?: string[];
+}
 
 interface ChatIAProps {
-  projetoAtivo?: Project | null;
-  arquivoAtivo?: File | null;
-  codigoSelecionado?: string;
-  onCodeGenerated?: (codigo: string) => void;
-  onFileModified?: (arquivo: File, novoConteudo: string) => void;
+  projectId?: number;
+  fileId?: number;
+  selectedCode?: string;
+  language?: string;
 }
 
-interface Mensagem {
-  id: string;
-  tipo: 'usuario' | 'ia';
-  conteudo: string;
-  codigo?: string;
-  timestamp: Date;
-  status?: 'enviando' | 'sucesso' | 'erro';
-}
-
-export function ChatIA({ 
-  projetoAtivo, 
-  arquivoAtivo, 
-  codigoSelecionado,
-  onCodeGenerated,
-  onFileModified 
-}: ChatIAProps) {
-  const [mensagens, setMensagens] = useState<Mensagem[]>([
+export default function ChatIA({ projectId, fileId, selectedCode, language }: ChatIAProps) {
+  const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: '1',
-      tipo: 'ia',
-      conteudo: 'Olá! Sou seu assistente de programação em português. Posso ajudar você a:\n\n• **Analisar e melhorar** seu código\n• **Gerar código novo** baseado em suas instruções\n• **Corrigir bugs** automaticamente\n• **Explicar conceitos** de programação\n• **Editar arquivos** do projeto diretamente\n• **Sugerir melhorias** no código\n\n**Como posso ajudar hoje?** 🚀',
-      timestamp: new Date(),
-      status: 'sucesso'
+      content: `Olá! Sou seu assistente de programação avançado em português. 
+
+🚀 **Capacidades Completas:**
+• Analisar toda a estrutura do seu projeto
+• Modificar arquivos existentes automaticamente
+• Criar novos arquivos e pastas
+• Gerar código completo e funcional
+• Refatorar código em múltiplos arquivos
+• Corrigir bugs automaticamente
+• Implementar funcionalidades completas
+• Otimizar performance do código
+• Adicionar documentação e comentários
+
+**Exemplos do que posso fazer:**
+📝 "Crie um sistema de login completo"
+🔧 "Refatore este código para usar TypeScript"
+🐛 "Encontre e corrija todos os bugs do projeto"
+📁 "Analise a estrutura e sugira melhorias"
+⚡ "Otimize a performance desta função"
+
+**Como posso transformar seu projeto hoje?**`,
+      type: 'ai',
+      timestamp: new Date()
     }
   ]);
-  const [novaMensagem, setNovaMensagem] = useState('');
-  const [digitando, setDigitando] = useState(false);
-  const [copiado, setCopiado] = useState<string | null>(null);
-  const [expandido, setExpandido] = useState(true);
-  const chatRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [inputValue, setInputValue] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Scroll automático para o final
-  useEffect(() => {
-    if (chatRef.current) {
-      chatRef.current.scrollTop = chatRef.current.scrollHeight;
-    }
-  }, [mensagens, digitando]);
-
-  // Focar no input quando componente carrega
-  useEffect(() => {
-    if (inputRef.current && expandido) {
-      inputRef.current.focus();
-    }
-  }, [expandido]);
-
-  // Enviar mensagem para IA
-  const enviarMensagemMutation = useMutation({
-    mutationFn: (dados: any) => apiRequest('/api/chat', {
-      method: 'POST',
-      body: JSON.stringify({
-        ...dados,
-        acessarPastas: true
-      }),
-    }),
-    onSuccess: (resposta) => {
-      setDigitando(false);
-
-      const novaMensagemIA: Mensagem = {
-        id: Date.now().toString(),
-        tipo: 'ia',
-        conteudo: resposta.resposta || 'Desculpe, não consegui processar sua solicitação.',
-        codigo: resposta.codigoGerado,
-        timestamp: new Date(),
-        status: 'sucesso'
-      };
-
-      setMensagens(prev => 
-        prev.map(msg => 
-          msg.status === 'enviando' ? { ...msg, status: 'sucesso' } : msg
-        ).concat(novaMensagemIA)
-      );
-
-      // Se código foi gerado, notificar componente pai
-      if (resposta.codigoGerado && onCodeGenerated) {
-        onCodeGenerated(resposta.codigoGerado);
-      }
-
-      // Se arquivos foram modificados, notificar componente pai
-      if (resposta.arquivosModificados && onFileModified) {
-        resposta.arquivosModificados.forEach((arquivo: any) => {
-          if (arquivoAtivo && arquivo.nome === arquivoAtivo.name) {
-            onFileModified(arquivoAtivo, arquivo.novoConteudo);
-          }
-        });
-      }
-
-      // Se novos arquivos foram criados, mostrar notificação
-      if (resposta.arquivosCriados && resposta.arquivosCriados.length > 0) {
-        const arquivosCriados = resposta.arquivosCriados.map((a: any) => a.nome).join(', ');
-        console.log(`✅ Arquivos criados: ${arquivosCriados}`);
-        setTimeout(() => window.location.reload(), 1000);
-      }
-    },
-    onError: (error) => {
-      setDigitando(false);
-      setMensagens(prev => 
-        prev.map(msg => 
-          msg.status === 'enviando' ? { ...msg, status: 'erro' } : msg
-        )
-      );
-
-      const mensagemErro: Mensagem = {
-        id: Date.now().toString(),
-        tipo: 'ia',
-        conteudo: `❌ **Erro:** ${error.message || 'Falha na comunicação com a IA'}`,
-        timestamp: new Date(),
-        status: 'erro'
-      };
-      setMensagens(prev => [...prev, mensagemErro]);
-    },
-  });
-
-  const handleEnviarMensagem = () => {
-    if (!novaMensagem.trim()) return;
-
-    // Adicionar mensagem do usuário
-    const mensagemUsuario: Mensagem = {
-      id: Date.now().toString(),
-      tipo: 'usuario',
-      conteudo: novaMensagem,
-      timestamp: new Date(),
-      status: 'enviando'
-    };
-
-    setMensagens(prev => [...prev, mensagemUsuario]);
-    setDigitando(true);
-
-    // Preparar dados para enviar à IA
-    const dados = {
-      mensagem: novaMensagem,
-      projetoId: projetoAtivo?.id,
-      arquivoId: arquivoAtivo?.id,
-      codigoSelecionado,
-      linguagem: arquivoAtivo?.language || 'javascript',
-    };
-
-    enviarMensagemMutation.mutate(dados);
-    setNovaMensagem('');
-  };
-
-  const copiarCodigo = async (codigo: string, id: string) => {
-    try {
-      await navigator.clipboard.writeText(codigo);
-      setCopiado(id);
-      setTimeout(() => setCopiado(null), 2000);
-    } catch (error) {
-      console.error('Erro ao copiar:', error);
-    }
-  };
-
-  const aplicarCodigo = (codigo: string) => {
-    if (onCodeGenerated) {
-      onCodeGenerated(codigo);
-    }
-  };
-
-  const limparChat = () => {
-    setMensagens([mensagens[0]]); // Manter apenas mensagem de boas-vindas
-  };
-
-  const reenviarMensagem = (mensagem: Mensagem) => {
-    if (mensagem.tipo === 'usuario') {
-      setNovaMensagem(mensagem.conteudo);
-      inputRef.current?.focus();
-    }
-  };
-
-  const sugestoes = [
-    { 
-      texto: 'Analise este código e sugira melhorias', 
-      icon: <Code className="w-3 h-3" />,
-      categoria: 'análise'
-    },
-    { 
-      texto: 'Crie uma função React funcional', 
-      icon: <Plus className="w-3 h-3" />,
-      categoria: 'geração'
-    },
-    { 
-      texto: 'Como posso otimizar este código?', 
-      icon: <Zap className="w-3 h-3" />,
-      categoria: 'otimização'
-    },
-    { 
-      texto: 'Encontre bugs no meu código', 
-      icon: <AlertCircle className="w-3 h-3" />,
-      categoria: 'debug'
-    },
-    { 
-      texto: 'Adicione comentários explicativos', 
-      icon: <FileText className="w-3 h-3" />,
-      categoria: 'documentação'
-    },
-    { 
-      texto: 'Refatore este código para TypeScript', 
-      icon: <RefreshCw className="w-3 h-3" />,
-      categoria: 'refatoração'
-    },
+  // Sugestões rápidas
+  const quickSuggestions = [
+    "Analise este código: // Arquivo de exemplo - IDE em Português...",
+    "Crie uma função para calcular idade",
+    "Adicione comentários explicativos ao código",
+    "Refatore para usar async/await",
+    "Encontre e corrija possíveis bugs",
+    "Otimize a performance desta função"
   ];
 
-  const handleSugestao = (sugestao: string) => {
-    setNovaMensagem(sugestao);
-    inputRef.current?.focus();
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const handleSendMessage = async (messageText?: string) => {
+    const textToSend = messageText || inputValue;
+    if (!textToSend.trim() || isLoading) return;
+
+    const userMessage: ChatMessage = {
+      id: Date.now().toString(),
+      content: textToSend,
+      type: 'user',
+      timestamp: new Date()
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setInputValue('');
+    setIsLoading(true);
+
+    try {
+      const response = await fetch('/api/ia/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          mensagem: textToSend,
+          projetoId: projectId,
+          arquivoId: fileId,
+          codigoSelecionado: selectedCode,
+          linguagem: language,
+          acessarPastas: true
+        }),
+      });
+
+      const data = await response.json();
+
+      const aiMessage: ChatMessage = {
+        id: (Date.now() + 1).toString(),
+        content: data.resposta || 'Desculpe, ocorreu um erro ao processar sua mensagem.',
+        type: 'ai',
+        timestamp: new Date(),
+        codeGenerated: data.codigoGerado,
+        filesModified: data.arquivosModificados,
+        filesCreated: data.arquivosCriados,
+        actions: data.acoes
+      };
+
+      setMessages(prev => [...prev, aiMessage]);
+
+      // Mostrar notificação se arquivos foram modificados
+      if (data.arquivosModificados?.length > 0 || data.arquivosCriados?.length > 0) {
+        setTimeout(() => {
+          const totalFiles = (data.arquivosModificados?.length || 0) + (data.arquivosCriados?.length || 0);
+          alert(`✅ IA aplicou mudanças!\n${totalFiles} arquivo(s) foram atualizados/criados automaticamente.`);
+        }, 1000);
+      }
+
+    } catch (error) {
+      console.error('Erro ao enviar mensagem:', error);
+      const errorMessage: ChatMessage = {
+        id: (Date.now() + 1).toString(),
+        content: '❌ Erro ao conectar com o assistente. Verifique se a chave OPENAI_API_KEY está configurada corretamente.',
+        type: 'ai',
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
+
+  const formatContent = (content: string) => {
+    // Destacar código com ```
+    const codeRegex = /```(\w+)?\n([\s\S]*?)```/g;
+    const parts = content.split(codeRegex);
+
+    return parts.map((part, index) => {
+      if (index % 3 === 2) { // É código
+        return (
+          <pre key={index} className="bg-gray-800 p-3 rounded mt-2 mb-2 overflow-x-auto">
+            <code className="text-green-400 text-xs">{part}</code>
+          </pre>
+        );
+      } else if (index % 3 === 1) {
+        return null; // Linguagem do código
+      }
+      return <span key={index}>{part}</span>;
+    });
   };
 
   return (
-    <div className={`flex flex-col h-full bg-card transition-all duration-300 ${expandido ? 'w-full' : 'w-12'}`}>
-      {/* Cabeçalho melhorado */}
-      <div className="p-4 border-b bg-gradient-to-r from-primary/10 to-purple-500/10">
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-2">
-            <div className="relative">
-              <Bot className="w-5 h-5 text-primary" />
-              <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-            </div>
-            {expandido && (
-              <>
-                <h3 className="font-semibold">Assistente IA</h3>
-                <Sparkles className="w-4 h-4 text-yellow-500" />
-              </>
-            )}
-          </div>
-          
-          {expandido && (
-            <div className="flex items-center gap-1">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={limparChat}
-                className="h-6 w-6 p-0"
-                title="Limpar chat"
-              >
-                <Trash2 className="w-3 h-3" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setExpandido(false)}
-                className="h-6 w-6 p-0"
-                title="Minimizar"
-              >
-                <MessageSquare className="w-3 h-3" />
-              </Button>
-            </div>
+    <div className="flex flex-col h-full bg-gray-900 border-l border-gray-700">
+      {/* Header */}
+      <div className="p-4 border-b border-gray-700 bg-gray-800">
+        <div className="flex items-center space-x-2">
+          <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+          <h3 className="text-white font-semibold">🤖 Assistente IA Avançado</h3>
+        </div>
+        <div className="flex items-center mt-2 text-xs text-gray-400">
+          <span className="inline-flex items-center px-2 py-1 rounded-full bg-green-900 text-green-300">
+            ✅ OpenAI Configurado
+          </span>
+          {projectId && (
+            <span className="ml-2 inline-flex items-center px-2 py-1 rounded-full bg-blue-900 text-blue-300">
+              📁 Projeto {projectId}
+            </span>
+          )}
+          {fileId && (
+            <span className="ml-2 inline-flex items-center px-2 py-1 rounded-full bg-purple-900 text-purple-300">
+              📄 Arquivo {fileId}
+            </span>
           )}
         </div>
-
-        {expandido && projetoAtivo && (
-          <div className="text-xs text-muted-foreground bg-background/50 p-2 rounded">
-            <div className="flex items-center gap-1">
-              <FileText className="w-3 h-3" />
-              <span className="font-medium">Projeto:</span> {projetoAtivo.name}
-            </div>
-            {arquivoAtivo && (
-              <div className="flex items-center gap-1 mt-1">
-                <Code className="w-3 h-3" />
-                <span className="font-medium">Arquivo:</span> {arquivoAtivo.name}
-              </div>
-            )}
-          </div>
-        )}
       </div>
 
-      {!expandido && (
-        <div className="flex-1 flex items-center justify-center">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setExpandido(true)}
-            className="h-8 w-8 p-0"
-            title="Expandir chat"
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {messages.map((message) => (
+          <div
+            key={message.id}
+            className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
           >
-            <MessageSquare className="w-4 h-4" />
-          </Button>
+            <div
+              className={`max-w-[90%] rounded-lg p-4 ${
+                message.type === 'user'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-700 text-gray-100'
+              }`}
+            >
+              <div className="whitespace-pre-wrap text-sm">
+                {message.type === 'ai' ? formatContent(message.content) : message.content}
+              </div>
+
+              {/* Código gerado */}
+              {message.codeGenerated && (
+                <div className="mt-3 p-3 bg-gray-800 rounded border-l-4 border-green-500">
+                  <div className="text-xs text-green-400 mb-2">📄 Código Gerado:</div>
+                  <pre className="text-xs text-green-300 overflow-x-auto">
+                    <code>{message.codeGenerated}</code>
+                  </pre>
+                </div>
+              )}
+
+              {/* Arquivos modificados */}
+              {message.filesModified && message.filesModified.length > 0 && (
+                <div className="mt-3 p-3 bg-yellow-900 rounded border-l-4 border-yellow-500">
+                  <div className="text-xs text-yellow-400 mb-2">
+                    🔧 {message.filesModified.length} arquivo(s) modificado(s):
+                  </div>
+                  {message.filesModified.map((file, index) => (
+                    <div key={index} className="text-xs text-yellow-300">
+                      📝 {file.nome}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Arquivos criados */}
+              {message.filesCreated && message.filesCreated.length > 0 && (
+                <div className="mt-3 p-3 bg-green-900 rounded border-l-4 border-green-500">
+                  <div className="text-xs text-green-400 mb-2">
+                    ✨ {message.filesCreated.length} arquivo(s) criado(s):
+                  </div>
+                  {message.filesCreated.map((file, index) => (
+                    <div key={index} className="text-xs text-green-300">
+                      📄 {file.nome} → {file.caminho}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Ações realizadas */}
+              {message.actions && message.actions.length > 0 && (
+                <div className="mt-3 p-3 bg-blue-900 rounded border-l-4 border-blue-500">
+                  <div className="text-xs text-blue-400 mb-2">⚡ Ações realizadas:</div>
+                  {message.actions.map((action, index) => (
+                    <div key={index} className="text-xs text-blue-300">
+                      • {action}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <div className="text-xs opacity-70 mt-2 flex items-center">
+                <span>
+                  {message.timestamp.toLocaleTimeString('pt-BR', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  })}
+                </span>
+                {message.type === 'ai' && (
+                  <span className="ml-2 text-green-400">🤖 GPT-4o</span>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+
+        {isLoading && (
+          <div className="flex justify-start">
+            <div className="bg-gray-700 text-gray-100 rounded-lg p-4">
+              <div className="flex items-center space-x-3">
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500"></div>
+                <span className="text-sm">
+                  <span className="animate-pulse">Assistente analisando projeto</span>
+                  <span className="animate-bounce">...</span>
+                </span>
+              </div>
+              <div className="text-xs text-gray-400 mt-1">
+                Acessando arquivos • Processando código • Gerando resposta
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div ref={messagesEndRef} />
+      </div>
+
+      {/* Sugestões rápidas */}
+      {messages.length === 1 && (
+        <div className="px-4 pb-2">
+          <div className="text-xs text-gray-400 mb-2">💡 Sugestões rápidas:</div>
+          <div className="grid grid-cols-1 gap-1">
+            {quickSuggestions.slice(0, 3).map((suggestion, index) => (
+              <button
+                key={index}
+                onClick={() => handleSendMessage(suggestion)}
+                className="text-left text-xs p-2 bg-gray-800 hover:bg-gray-700 rounded border border-gray-600 transition-colors"
+                disabled={isLoading}
+              >
+                <span className="text-gray-300">{suggestion}</span>
+              </button>
+            ))}
+          </div>
         </div>
       )}
 
-      {expandido && (
-        <>
-          {/* Chat melhorado */}
-          <div 
-            ref={chatRef}
-            className="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth"
+      {/* Input */}
+      <div className="p-4 border-t border-gray-700 bg-gray-800">
+        <div className="flex space-x-2">
+          <div className="flex-1">
+            <textarea
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="Ex: 'Analise todo o projeto', 'Crie um sistema de login', 'Refatore este código'..."
+              className="w-full bg-gray-700 text-white rounded-lg px-4 py-3 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
+              rows={2}
+              disabled={isLoading}
+            />
+          </div>
+          <button
+            onClick={() => handleSendMessage()}
+            disabled={!inputValue.trim() || isLoading}
+            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed transition-all transform hover:scale-105 active:scale-95"
           >
-            {mensagens.map((mensagem) => (
-              <div
-                key={mensagem.id}
-                className={`flex gap-3 ${
-                  mensagem.tipo === 'usuario' ? 'flex-row-reverse' : ''
-                }`}
-              >
-                {/* Avatar melhorado */}
-                <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center relative ${
-                  mensagem.tipo === 'usuario' 
-                    ? 'bg-gradient-to-r from-primary to-blue-600 text-primary-foreground' 
-                    : 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
-                }`}>
-                  {mensagem.tipo === 'usuario' ? (
-                    <User className="w-4 h-4" />
-                  ) : (
-                    <Bot className="w-4 h-4" />
-                  )}
-                  
-                  {/* Indicador de status */}
-                  {mensagem.status === 'enviando' && (
-                    <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-yellow-500 rounded-full flex items-center justify-center">
-                      <div className="w-1 h-1 bg-white rounded-full animate-pulse" />
-                    </div>
-                  )}
-                  {mensagem.status === 'erro' && (
-                    <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-red-500 rounded-full flex items-center justify-center">
-                      <AlertCircle className="w-2 h-2 text-white" />
-                    </div>
-                  )}
-                </div>
+            {isLoading ? (
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+            ) : (
+              '🚀'
+            )}
+          </button>
+        </div>
 
-                {/* Mensagem melhorada */}
-                <div className={`flex-1 max-w-[85%] ${
-                  mensagem.tipo === 'usuario' ? 'text-right' : ''
-                }`}>
-                  <div className={`rounded-lg p-3 relative group ${
-                    mensagem.tipo === 'usuario'
-                      ? 'bg-gradient-to-r from-primary to-blue-600 text-primary-foreground ml-auto'
-                      : 'bg-muted border'
-                  }`}>
-                    <div className="whitespace-pre-wrap text-sm leading-relaxed">
-                      {mensagem.conteudo}
-                    </div>
-
-                    {/* Botões de ação */}
-                    <div className={`absolute top-2 ${mensagem.tipo === 'usuario' ? 'left-2' : 'right-2'} opacity-0 group-hover:opacity-100 transition-opacity`}>
-                      <div className="flex gap-1">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => copiarCodigo(mensagem.conteudo, mensagem.id)}
-                          className="h-5 w-5 p-0"
-                          title="Copiar"
-                        >
-                          {copiado === mensagem.id ? (
-                            <Check className="w-3 h-3 text-green-500" />
-                          ) : (
-                            <Copy className="w-3 h-3" />
-                          )}
-                        </Button>
-                        {mensagem.status === 'erro' && mensagem.tipo === 'usuario' && (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => reenviarMensagem(mensagem)}
-                            className="h-5 w-5 p-0"
-                            title="Reenviar"
-                          >
-                            <RefreshCw className="w-3 h-3" />
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Código gerado melhorado */}
-                    {mensagem.codigo && (
-                      <div className="mt-3 p-3 bg-background/90 rounded border">
-                        <div className="flex items-center justify-between mb-2">
-                          <div className="flex items-center gap-1">
-                            <Code className="w-4 h-4 text-green-500" />
-                            <span className="text-xs font-medium text-green-600">Código Gerado</span>
-                          </div>
-                          <div className="flex gap-1">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => copiarCodigo(mensagem.codigo!, `code-${mensagem.id}`)}
-                              className="h-6 w-6 p-0"
-                              title="Copiar código"
-                            >
-                              {copiado === `code-${mensagem.id}` ? (
-                                <Check className="w-3 h-3 text-green-500" />
-                              ) : (
-                                <Copy className="w-3 h-3" />
-                              )}
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => aplicarCodigo(mensagem.codigo!)}
-                              className="h-6 w-6 p-0"
-                              title="Aplicar código"
-                            >
-                              <Download className="w-3 h-3" />
-                            </Button>
-                          </div>
-                        </div>
-                        <pre className="text-xs overflow-x-auto bg-black/50 p-2 rounded">
-                          <code className="text-green-400">{mensagem.codigo}</code>
-                        </pre>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
-                    {mensagem.timestamp.toLocaleTimeString('pt-BR', { 
-                      hour: '2-digit', 
-                      minute: '2-digit' 
-                    })}
-                    {mensagem.status === 'enviando' && (
-                      <span className="text-yellow-600">• Enviando...</span>
-                    )}
-                    {mensagem.status === 'erro' && (
-                      <span className="text-red-600">• Erro</span>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-
-            {/* Indicador de digitação melhorado */}
-            {digitando && (
-              <div className="flex gap-3">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white flex items-center justify-center">
-                  <Bot className="w-4 h-4" />
-                </div>
-                <div className="bg-muted rounded-lg p-3 border">
-                  <div className="flex items-center space-x-2">
-                    <div className="flex space-x-1">
-                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
-                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
-                    </div>
-                    <span className="text-xs text-muted-foreground">IA está pensando...</span>
-                  </div>
-                </div>
-              </div>
+        {/* Context info melhorado */}
+        <div className="mt-3 flex items-center justify-between text-xs">
+          <div className="text-gray-400">
+            {selectedCode ? (
+              <span className="text-yellow-400">📝 Código selecionado para análise</span>
+            ) : (
+              <span>🔍 IA tem acesso completo ao projeto</span>
             )}
           </div>
-
-          {/* Sugestões rápidas melhoradas */}
-          {mensagens.length === 1 && (
-            <div className="px-4 pb-2 border-t bg-background/50">
-              <div className="text-xs text-muted-foreground mb-2 flex items-center gap-1">
-                <Sparkles className="w-3 h-3" />
-                Sugestões rápidas:
-              </div>
-              <div className="grid grid-cols-2 gap-1">
-                {sugestoes.slice(0, 4).map((sugestao, index) => (
-                  <Button
-                    key={index}
-                    variant="ghost"
-                    size="sm"
-                    className="text-xs h-8 justify-start px-2"
-                    onClick={() => handleSugestao(sugestao.texto)}
-                  >
-                    {sugestao.icon}
-                    <span className="truncate ml-1">{sugestao.texto}</span>
-                  </Button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Campo de entrada melhorado */}
-          <div className="p-4 border-t bg-background/50">
-            <div className="flex gap-2">
-              <div className="flex-1 relative">
-                <Input
-                  ref={inputRef}
-                  placeholder="Digite sua pergunta ou solicite ajuda com código..."
-                  value={novaMensagem}
-                  onChange={(e) => setNovaMensagem(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                      e.preventDefault();
-                      handleEnviarMensagem();
-                    }
-                  }}
-                  disabled={enviarMensagemMutation.isPending}
-                  className="pr-10"
-                />
-                {novaMensagem && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setNovaMensagem('')}
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
-                  >
-                    <Trash2 className="w-3 h-3" />
-                  </Button>
-                )}
-              </div>
-              <Button
-                onClick={handleEnviarMensagem}
-                disabled={!novaMensagem.trim() || enviarMensagemMutation.isPending}
-                size="sm"
-                className="px-3"
-              >
-                {enviarMensagemMutation.isPending ? (
-                  <RefreshCw className="w-4 h-4 animate-spin" />
-                ) : (
-                  <Send className="w-4 h-4" />
-                )}
-              </Button>
-            </div>
-
-            <div className="flex justify-between items-center mt-2 text-xs text-muted-foreground">
-              <span>Enter para enviar • Shift+Enter para nova linha</span>
-              {codigoSelecionado && (
-                <span className="flex items-center gap-1 text-green-600">
-                  <Code className="w-3 h-3" />
-                  Código selecionado detectado
-                </span>
-              )}
-            </div>
+          <div className="text-gray-500">
+            GPT-4o • Responde em português
           </div>
-        </>
-      )}
+        </div>
+      </div>
     </div>
   );
 }
