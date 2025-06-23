@@ -27,6 +27,7 @@ interface ActiveFile {
 
 interface ChatPanelProps {
   activeFile?: ActiveFile | null;
+  onCodeEdit?: (code: string) => void;
 }
 
 interface ChatResponse {
@@ -39,7 +40,7 @@ interface ChatResponse {
   };
 }
 
-export function ChatPanel({ activeFile }: ChatPanelProps) {
+export function ChatPanel({ activeFile, onCodeEdit }: ChatPanelProps) {
   const [message, setMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [localMessages, setLocalMessages] = useState<ChatMessage[]>([]);
@@ -286,6 +287,19 @@ export function ChatPanel({ activeFile }: ChatPanelProps) {
                     {/* Show code snippets if available */}
                     {msg.metadata?.codeSnippet && (
                       <div className="mt-3 bg-vs-bg rounded p-2 font-mono text-xs overflow-x-auto">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-vs-text-muted text-xs">{t("suggestedCode")}</span>
+                          {onCodeEdit && (
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="h-6 text-xs text-vs-accent hover:text-vs-accent-hover"
+                              onClick={() => onCodeEdit(msg.metadata.codeSnippet)}
+                            >
+                              {t("applyToEditor")}
+                            </Button>
+                          )}
+                        </div>
                         <pre className="text-vs-text">{msg.metadata.codeSnippet}</pre>
                       </div>
                     )}

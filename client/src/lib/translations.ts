@@ -69,6 +69,11 @@ export const translations = {
     devServerRunning: "Servidor Dev: Executando",
     memory: "Memória",
     
+    // Código
+    suggestedCode: "Código sugerido:",
+    applyToEditor: "Aplicar no Editor",
+    codeApplied: "Código aplicado no editor com sucesso.",
+    
     // Atalhos
     saveShortcut: "Ctrl+S para salvar",
     saveAllShortcut: "Ctrl+Shift+S para salvar tudo",
@@ -141,8 +146,13 @@ export const translations = {
     errorOpeningFile: "Error opening file",
     
     // Status
-    devServerRunning: "Dev Server: Running",
+    devServerRunning: "Dev Server: Running", 
     memory: "Memory",
+    
+    // Code
+    suggestedCode: "Suggested code:",
+    applyToEditor: "Apply to Editor",
+    codeApplied: "Code applied to editor successfully.",
     
     // Shortcuts
     saveShortcut: "Ctrl+S to save",

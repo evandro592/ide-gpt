@@ -51,26 +51,34 @@ export async function analyzeCode(code: string, language: string = "javascript")
 export async function chatWithAI(message: string, context?: string): Promise<ChatResponse> {
   try {
     const systemMessage = context 
-      ? `You are an AI coding assistant. Help with code analysis, debugging, and suggestions. Current context: ${context}`
-      : "You are an AI coding assistant. Help with code analysis, debugging, and suggestions.";
+      ? `Você é um assistente de programação IA em português. Ajude com análise de código, debugging e sugestões. Quando fornecer código, inclua sempre snippets funcionais que podem ser copiados. Contexto atual: ${context}`
+      : "Você é um assistente de programação IA em português. Ajude com análise de código, debugging e sugestões. Quando fornecer código, inclua sempre snippets funcionais que podem ser copiados.";
 
     const response = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [
         {
           role: "system",
-          content: systemMessage
+          content: systemMessage + "\n\nSempre que fornecer código, inclua um snippet completo e funcional que pode ser aplicado diretamente."
         },
         {
           role: "user",
           content: message
         }
       ],
-      max_tokens: 1000,
+      max_tokens: 1500,
     });
 
+    const content = response.choices[0].message.content || "Desculpe, não consegui processar sua solicitação.";
+    
+    // Extrair snippet de código se houver
+    const codeBlockRegex = /```[\w]*\n([\s\S]*?)\n```/g;
+    const codeMatch = codeBlockRegex.exec(content);
+    const codeSnippet = codeMatch ? codeMatch[1] : null;
+
     return {
-      message: response.choices[0].message.content || "I apologize, but I couldn't process your request.",
+      message: content,
+      codeSnippet: codeSnippet,
     };
   } catch (error) {
     throw new Error("Failed to chat with AI: " + (error as Error).message);

@@ -166,6 +166,22 @@ export default function IDE() {
     }
   };
 
+  const handleCodeEdit = (code: string) => {
+    if (activeTabIndex >= 0 && openTabs[activeTabIndex]) {
+      setOpenTabs(tabs =>
+        tabs.map((tab, index) =>
+          index === activeTabIndex
+            ? { ...tab, content: code, modified: true }
+            : tab
+        )
+      );
+      toast({
+        title: t("codeApplied"),
+        description: t("codeApplied"),
+      });
+    }
+  };
+
   const handleSave = () => {
     if (activeTabIndex >= 0 && openTabs[activeTabIndex]) {
       const activeTab = openTabs[activeTabIndex];
@@ -363,7 +379,7 @@ export default function IDE() {
             fontSize={fontSize}
           />
         }
-        rightPanel={<ChatPanel activeFile={activeTab} />}
+        rightPanel={<ChatPanel activeFile={activeTab} onCodeEdit={handleCodeEdit} />}
       />
 
       {/* Footer Status Bar */}
