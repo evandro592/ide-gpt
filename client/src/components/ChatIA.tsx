@@ -76,6 +76,27 @@ export default function ChatIA({ projectId, fileId, selectedCode, language }: Ch
     scrollToBottom();
   }, [messages]);
 
+  // Escutar eventos de análise do editor
+  useEffect(() => {
+    const handleChatMessage = (event: any) => {
+      const { resposta, codigoGerado, arquivosModificados } = event.detail;
+      
+      const aiMessage: ChatMessage = {
+        id: Date.now().toString(),
+        content: resposta,
+        type: 'ai',
+        timestamp: new Date(),
+        codeGenerated: codigoGerado,
+        filesModified: arquivosModificados
+      };
+
+      setMessages(prev => [...prev, aiMessage]);
+    };
+
+    window.addEventListener('chatIAMessage', handleChatMessage);
+    return () => window.removeEventListener('chatIAMessage', handleChatMessage);
+  }, []);
+
   const handleSendMessage = async (messageText?: string) => {
     const textToSend = messageText || inputValue;
     if (!textToSend.trim() || isLoading) return;

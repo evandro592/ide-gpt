@@ -25,7 +25,7 @@ export function Editor({ arquivo, onSave, onAnalyzeCode, onRunCode }: EditorProp
 
   const handleEditorDidMount = (editor: any) => {
     editorRef.current = editor;
-    
+
     // Configurar tema escuro personalizado
     editor.defineTheme('ide-dark', {
       base: 'vs-dark',
@@ -47,7 +47,7 @@ export function Editor({ arquivo, onSave, onAnalyzeCode, onRunCode }: EditorProp
         'editorCursor.foreground': '#AEAFAD',
       }
     });
-    
+
     editor.setTheme('ide-dark');
   };
 
@@ -68,14 +68,14 @@ export function Editor({ arquivo, onSave, onAnalyzeCode, onRunCode }: EditorProp
       const codigoSelecionado = editorRef.current?.getSelection()
         ? editorRef.current?.getModel()?.getValueInRange(editorRef.current?.getSelection())
         : conteudo;
-      
+
       onAnalyzeCode(codigoSelecionado || conteudo, arquivo.language || 'javascript');
     }
   };
 
   const getLinguagem = () => {
     if (!arquivo) return 'plaintext';
-    
+
     const extensao = arquivo.name.split('.').pop();
     const mapeamento: Record<string, string> = {
       'js': 'javascript',
@@ -102,7 +102,7 @@ export function Editor({ arquivo, onSave, onAnalyzeCode, onRunCode }: EditorProp
       'swift': 'swift',
       'dart': 'dart',
     };
-    
+
     return mapeamento[extensao || ''] || 'plaintext';
   };
 
@@ -128,7 +128,7 @@ export function Editor({ arquivo, onSave, onAnalyzeCode, onRunCode }: EditorProp
             <span className="w-2 h-2 bg-orange-500 rounded-full" title="Arquivo modificado" />
           )}
         </div>
-        
+
         <div className="flex items-center gap-2">
           <Button
             variant="ghost"
@@ -139,7 +139,7 @@ export function Editor({ arquivo, onSave, onAnalyzeCode, onRunCode }: EditorProp
             <Bot className="w-4 h-4" />
             Analisar IA
           </Button>
-          
+
           {onRunCode && (
             <Button
               variant="ghost"
@@ -151,7 +151,7 @@ export function Editor({ arquivo, onSave, onAnalyzeCode, onRunCode }: EditorProp
               Executar
             </Button>
           )}
-          
+
           <Button
             variant="ghost"
             size="sm"

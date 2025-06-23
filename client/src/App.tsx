@@ -129,11 +129,10 @@ export default function App() {
         {/* Chat da IA */}
         <div className="ide-chat">
           <ChatIA
-            projetoAtivo={projetoAtivo}
-            arquivoAtivo={arquivoAtivo}
-            codigoSelecionado={codigoSelecionado}
-            onCodeGenerated={handleCodigoGerado}
-            onFileModified={handleArquivoModificado}
+            projectId={projetoAtivo?.id}
+            fileId={arquivoAtivo?.id}
+            selectedCode={codigoSelecionado}
+            language={arquivoAtivo?.nome?.split('.').pop()}
           />
         </div>
       </div>
