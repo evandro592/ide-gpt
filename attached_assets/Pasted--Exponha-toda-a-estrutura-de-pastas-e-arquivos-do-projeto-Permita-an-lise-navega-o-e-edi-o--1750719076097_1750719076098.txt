@@ -1,0 +1,70 @@
+- Exponha toda a estrutura de pastas e arquivos do projeto  
+- Permita análise, navegação e edição de código  
+- Ofereça um chat rolável, com caixa de texto fixa  
+- Inclua configurações comuns de IDE (tema, fonte, atalhos)  
+- Forneça scripts `.bat` bem estruturados para:
+  - Instalar dependências (`install_dependencies.bat`)  
+  - Iniciar em modo de desenvolvimento (`start_app.bat`)  
+  - Gerar build de produção (`build_app.bat`)  
+
+**PLANNER MODULE**  
+1. [Iniciar] para detecção automática da raiz do projeto e carregamento da árvore de arquivos  
+2. [Renderizar árvore] utilizando componente de árvore em React para navegação de diretórios  
+3. [Abrir arquivo] para exibir conteúdo em editor de código com realce de sintaxe  
+4. [Integrar ChatGPT] para enviar trechos de código via API e receber análises ou sugestões  
+5. [Renderizar chat] para mensagens bidirecionais, com painel rolável e caixa de input fixa  
+6. [Criar scripts Windows] para gerar três arquivos `.bat` que:
+   - Verifiquem Node.js/NPM  
+   - Instal dependências (`npm install`)  
+   - Iniciem a app em dev (`npm start`)  
+   - Buildem em produção (`npm run build`)  
+7. [Executar edição] para aplicar patches retornados pelo GPT diretamente nos arquivos  
+8. [Salvar alterações] para persistir modificações no sistema de arquivos virtual ou real  
+9. [Gerenciar configurações] para seleção de tema, tamanho de fonte e atalhos de teclado  
+10. [Verificar critérios de sucesso] ao final de cada etapa:  
+    - Arquivos carregados e navegáveis sem erro  
+    - Chat responde em menos de 2 segundos  
+    - Edições aplicadas são refletidas no editor  
+    - Scripts `.bat` funcionam sem erros no Windows  
+11. [Aguardar confirmação do usuário antes de finalizar]
+
+**KNOWLEDGE MODULE**  
+Você deve conhecer profundamente React (v18+), hooks de estado, Context API ou Redux, Tailwind CSS (v3+), monaco-editor ou react-codemirror, e a API OpenAI para geração e revisão de código. Valide versões de dependências consultando `package.json`.
+
+**DATASOURCE MODULE**  
+- **GitHub API** para importação de repositórios  
+- **NPM Registry API** para verificar últimas versões estáveis de pacotes  
+- **OpenAI API** para análise e geração de código  
+Filtros: compatibilidade com React 18+, Tailwind 3+, Windows 10/11. Validação cruzada entre `package.json` e metadados do NPM.
+
+**FERRAMENTAS E FLUXO DE EXECUÇÃO**  
+- **Shell (Windows .bat)**: gerar scripts para instalação, start e build  
+- **Browser**: coletar exemplos e documentação de monaco-editor ou react-codemirror  
+- **File**: leitura e escrita de arquivos via Node.js  
+Use `notify_user` para progresso não-bloqueante e `ask_user` em decisões críticas (e.g., “Tema: claro ou escuro?”). Em caso de falha, tente alternativa (e.g., trocar editor) e notifique.
+
+**DOCUMENTAÇÃO E ORGANIZAÇÃO**  
+- `todo.md`: visão geral e etapas, atualizado a cada milestone  
+- Estrutura de pastas:
+/src
+/components
+/editor
+/chat
+/public
+index.html
+tailwind.config.js
+package.json
+todo.md
+README.md
+
+r
+Copiar
+Editar
+- Entregáveis finais em parágrafos corridos com exemplos de uso e screenshots, usando caminhos absolutos (ex.: `C:\projeto\src\editor\ChatPanel.jsx`)  
+- Ao concluir todos os passos, aguarde autorização do usuário antes de chamar `idle`.  
+
+
+
+
+
+
