@@ -171,39 +171,39 @@ export default function ChatIA({ projectId, fileId, selectedCode, language }: Ch
   };
 
   return (
-    <div className="flex flex-col h-full bg-gray-900 border-l border-gray-700">
-      {/* Header */}
-      <div className="p-4 border-b border-gray-700 bg-gray-800">
+    <div className="flex flex-col h-screen bg-gray-900 border-l border-gray-700 relative">
+      {/* Header - Altura fixa */}
+      <div className="flex-shrink-0 p-3 border-b border-gray-700 bg-gray-800">
         <div className="flex items-center space-x-2">
           <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-          <h3 className="text-white font-semibold">🤖 Assistente IA Avançado</h3>
+          <h3 className="text-white font-semibold text-sm">🤖 Assistente IA Avançado</h3>
         </div>
-        <div className="flex items-center mt-2 text-xs text-gray-400">
-          <span className="inline-flex items-center px-2 py-1 rounded-full bg-green-900 text-green-300">
-            ✅ OpenAI Configurado
+        <div className="flex items-center mt-1 text-xs text-gray-400 flex-wrap gap-1">
+          <span className="inline-flex items-center px-2 py-1 rounded-full bg-green-900 text-green-300 text-xs">
+            ✅ OpenAI
           </span>
           {projectId && (
-            <span className="ml-2 inline-flex items-center px-2 py-1 rounded-full bg-blue-900 text-blue-300">
-              📁 Projeto {projectId}
+            <span className="inline-flex items-center px-2 py-1 rounded-full bg-blue-900 text-blue-300 text-xs">
+              📁 P{projectId}
             </span>
           )}
           {fileId && (
-            <span className="ml-2 inline-flex items-center px-2 py-1 rounded-full bg-purple-900 text-purple-300">
-              📄 Arquivo {fileId}
+            <span className="inline-flex items-center px-2 py-1 rounded-full bg-purple-900 text-purple-300 text-xs">
+              📄 A{fileId}
             </span>
           )}
         </div>
       </div>
 
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      {/* Messages - Área rolável principal */}
+      <div className="flex-1 overflow-y-auto p-3 space-y-3 min-h-0" style={{ maxHeight: 'calc(100vh - 200px)' }}>
         {messages.map((message) => (
           <div
             key={message.id}
             className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
           >
             <div
-              className={`max-w-[90%] rounded-lg p-4 ${
+              className={`max-w-[85%] rounded-lg p-3 ${
                 message.type === 'user'
                   ? 'bg-blue-600 text-white'
                   : 'bg-gray-700 text-gray-100'
@@ -215,8 +215,8 @@ export default function ChatIA({ projectId, fileId, selectedCode, language }: Ch
 
               {/* Código gerado */}
               {message.codeGenerated && (
-                <div className="mt-3 p-3 bg-gray-800 rounded border-l-4 border-green-500">
-                  <div className="text-xs text-green-400 mb-2">📄 Código Gerado:</div>
+                <div className="mt-2 p-2 bg-gray-800 rounded border-l-4 border-green-500">
+                  <div className="text-xs text-green-400 mb-1">📄 Código Gerado:</div>
                   <pre className="text-xs text-green-300 overflow-x-auto">
                     <code>{message.codeGenerated}</code>
                   </pre>
@@ -225,8 +225,8 @@ export default function ChatIA({ projectId, fileId, selectedCode, language }: Ch
 
               {/* Arquivos modificados */}
               {message.filesModified && message.filesModified.length > 0 && (
-                <div className="mt-3 p-3 bg-yellow-900 rounded border-l-4 border-yellow-500">
-                  <div className="text-xs text-yellow-400 mb-2">
+                <div className="mt-2 p-2 bg-yellow-900 rounded border-l-4 border-yellow-500">
+                  <div className="text-xs text-yellow-400 mb-1">
                     🔧 {message.filesModified.length} arquivo(s) modificado(s):
                   </div>
                   {message.filesModified.map((file, index) => (
@@ -239,8 +239,8 @@ export default function ChatIA({ projectId, fileId, selectedCode, language }: Ch
 
               {/* Arquivos criados */}
               {message.filesCreated && message.filesCreated.length > 0 && (
-                <div className="mt-3 p-3 bg-green-900 rounded border-l-4 border-green-500">
-                  <div className="text-xs text-green-400 mb-2">
+                <div className="mt-2 p-2 bg-green-900 rounded border-l-4 border-green-500">
+                  <div className="text-xs text-green-400 mb-1">
                     ✨ {message.filesCreated.length} arquivo(s) criado(s):
                   </div>
                   {message.filesCreated.map((file, index) => (
@@ -253,8 +253,8 @@ export default function ChatIA({ projectId, fileId, selectedCode, language }: Ch
 
               {/* Ações realizadas */}
               {message.actions && message.actions.length > 0 && (
-                <div className="mt-3 p-3 bg-blue-900 rounded border-l-4 border-blue-500">
-                  <div className="text-xs text-blue-400 mb-2">⚡ Ações realizadas:</div>
+                <div className="mt-2 p-2 bg-blue-900 rounded border-l-4 border-blue-500">
+                  <div className="text-xs text-blue-400 mb-1">⚡ Ações realizadas:</div>
                   {message.actions.map((action, index) => (
                     <div key={index} className="text-xs text-blue-300">
                       • {action}
@@ -271,7 +271,7 @@ export default function ChatIA({ projectId, fileId, selectedCode, language }: Ch
                   })}
                 </span>
                 {message.type === 'ai' && (
-                  <span className="ml-2 text-green-400">🤖 GPT-4o</span>
+                  <span className="ml-2 text-green-400">🤖</span>
                 )}
               </div>
             </div>
@@ -280,16 +280,16 @@ export default function ChatIA({ projectId, fileId, selectedCode, language }: Ch
 
         {isLoading && (
           <div className="flex justify-start">
-            <div className="bg-gray-700 text-gray-100 rounded-lg p-4">
-              <div className="flex items-center space-x-3">
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500"></div>
+            <div className="bg-gray-700 text-gray-100 rounded-lg p-3">
+              <div className="flex items-center space-x-2">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500"></div>
                 <span className="text-sm">
-                  <span className="animate-pulse">Assistente analisando projeto</span>
+                  <span className="animate-pulse">Analisando</span>
                   <span className="animate-bounce">...</span>
                 </span>
               </div>
               <div className="text-xs text-gray-400 mt-1">
-                Acessando arquivos • Processando código • Gerando resposta
+                Processando código
               </div>
             </div>
           </div>
@@ -298,16 +298,16 @@ export default function ChatIA({ projectId, fileId, selectedCode, language }: Ch
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Sugestões rápidas */}
+      {/* Sugestões rápidas - Área flexível */}
       {messages.length === 1 && (
-        <div className="px-4 pb-2">
-          <div className="text-xs text-gray-400 mb-2">💡 Sugestões rápidas:</div>
+        <div className="flex-shrink-0 px-3 pb-2">
+          <div className="text-xs text-gray-400 mb-1">💡 Sugestões:</div>
           <div className="grid grid-cols-1 gap-1">
-            {quickSuggestions.slice(0, 3).map((suggestion, index) => (
+            {quickSuggestions.slice(0, 2).map((suggestion, index) => (
               <button
                 key={index}
                 onClick={() => handleSendMessage(suggestion)}
-                className="text-left text-xs p-2 bg-gray-800 hover:bg-gray-700 rounded border border-gray-600 transition-colors"
+                className="text-left text-xs p-2 bg-gray-800 hover:bg-gray-700 rounded border border-gray-600 transition-colors truncate"
                 disabled={isLoading}
               >
                 <span className="text-gray-300">{suggestion}</span>
@@ -317,24 +317,25 @@ export default function ChatIA({ projectId, fileId, selectedCode, language }: Ch
         </div>
       )}
 
-      {/* Input */}
-      <div className="p-4 border-t border-gray-700 bg-gray-800">
+      {/* Input - Altura fixa na parte inferior */}
+      <div className="flex-shrink-0 p-3 border-t border-gray-700 bg-gray-800 relative z-10">
         <div className="flex space-x-2">
           <div className="flex-1">
             <textarea
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Ex: 'Analise todo o projeto', 'Crie um sistema de login', 'Refatore este código'..."
-              className="w-full bg-gray-700 text-white rounded-lg px-4 py-3 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
+              placeholder="Digite sua pergunta ou comando..."
+              className="w-full bg-gray-700 text-white rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
               rows={2}
               disabled={isLoading}
+              style={{ maxHeight: '80px' }}
             />
           </div>
           <button
             onClick={() => handleSendMessage()}
             disabled={!inputValue.trim() || isLoading}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed transition-all transform hover:scale-105 active:scale-95"
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed transition-all text-sm"
           >
             {isLoading ? (
               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
@@ -344,17 +345,17 @@ export default function ChatIA({ projectId, fileId, selectedCode, language }: Ch
           </button>
         </div>
 
-        {/* Context info melhorado */}
-        <div className="mt-3 flex items-center justify-between text-xs">
-          <div className="text-gray-400">
+        {/* Context info compacto */}
+        <div className="mt-2 flex items-center justify-between text-xs">
+          <div className="text-gray-400 truncate">
             {selectedCode ? (
-              <span className="text-yellow-400">📝 Código selecionado para análise</span>
+              <span className="text-yellow-400">📝 Código selecionado</span>
             ) : (
-              <span>🔍 IA tem acesso completo ao projeto</span>
+              <span>🔍 Acesso ao projeto</span>
             )}
           </div>
           <div className="text-gray-500">
-            GPT-4o • Responde em português
+            GPT-4o
           </div>
         </div>
       </div>
