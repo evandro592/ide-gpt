@@ -1,6 +1,6 @@
-# Overview
+# Visão Geral
 
-This is a full-stack IDE web application with integrated ChatGPT capabilities, built using React, Express.js, and Drizzle ORM. The application provides a VSCode-like interface with file management, code editing, and AI-powered assistance for developers.
+Este é um IDE completo em português com capacidades de IA integradas, construído usando React, Express.js e Drizzle ORM. A aplicação fornece uma interface similar ao VSCode com gerenciamento de arquivos, edição de código e assistência de IA para desenvolvedores brasileiros.
 
 # System Architecture
 
@@ -84,10 +84,20 @@ This is a full-stack IDE web application with integrated ChatGPT capabilities, b
 - **Database**: Production PostgreSQL instance with connection pooling
 - **File Storage**: Persistent volume mounting for project files
 
-# Changelog
+# Histórico de Mudanças
 
-- June 23, 2025. Initial setup
+- 23 de junho, 2025: Configuração inicial do projeto
+- 23 de junho, 2025: IDE completo implementado em português com:
+  - Interface totalmente em português
+  - Editor Monaco integrado
+  - Assistente de IA com OpenAI
+  - Gerenciamento de projetos e arquivos
+  - Banco de dados PostgreSQL configurado
+  - Scripts para Windows (.cmd) criados
+  - Sistema completo de CRUD para projetos e arquivos
 
-# User Preferences
+# Preferências do Usuário
 
-Preferred communication style: Simple, everyday language.
+Estilo de comunicação preferido: Linguagem simples e cotidiana em português.
+Aplicação deve funcionar no desktop Windows do usuário.
+Interface deve ser 100% em português brasileiro.
