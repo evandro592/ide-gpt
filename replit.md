@@ -72,16 +72,23 @@ This is a full-stack web-based IDE (Integrated Development Environment) applicat
 ## Deployment Strategy
 
 ### Development Environment
-- **Command**: `npm run dev`
-- **Port**: 5000
+- **Command**: `npm run dev` (Linux/Mac) or `npm run dev:windows` (Windows)
+- **Port**: 5000 (localhost for Windows local, 0.0.0.0 for production)
 - **Hot Reload**: Vite HMR for frontend, tsx for backend
-- **Database**: PostgreSQL (configured via DATABASE_URL)
+- **Database**: PostgreSQL (configured via DATABASE_URL) or in-memory storage
+- **Windows Scripts**: `start_app.bat`, `install_dependencies.bat`, `build_app.bat`
 
 ### Production Build
 - **Frontend**: Vite builds to `dist/public`
 - **Backend**: esbuild bundles Node.js server to `dist/index.js`
-- **Start Command**: `npm start`
-- **Deployment Target**: Autoscale (Replit deployment)
+- **Start Command**: `npm start` (Linux/Mac) or `npm run start:windows` (Windows)
+- **Deployment Target**: Autoscale (Replit deployment) or Windows Local Server
+
+### Windows Local Server Setup
+- **Quick Start**: Execute `run_local_windows.bat`
+- **Manual Setup**: Run `install_dependencies.bat` then `start_app.bat`
+- **Local Access**: http://localhost:5000
+- **Requirements**: Node.js 18+, Windows 10/11
 
 ### Environment Variables
 - `DATABASE_URL`: PostgreSQL connection string
@@ -105,3 +112,9 @@ Changelog:
   - Chat messages now saved locally on user's computer
   - Real-time language switching functionality
   - Settings persistence in localStorage
+- June 23, 2025. Enhanced Windows local server support
+  - Added Windows-specific npm scripts (dev:windows, start:windows)
+  - Enhanced .bat scripts with better error handling and user feedback
+  - Added automatic browser opening and system checks
+  - Localhost binding for Windows development
+  - Complete Windows setup documentation
