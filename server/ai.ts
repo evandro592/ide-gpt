@@ -1,4 +1,3 @@
-
 import OpenAI from "openai";
 import { storage } from "./storage";
 import path from "path";
@@ -48,7 +47,7 @@ export class AssistenteIA {
     try {
       // Coletar contexto completo do projeto
       let contexto = "";
-      
+
       if (request.projetoId) {
         const projeto = await storage.getProject(request.projetoId);
         if (projeto) {
@@ -56,16 +55,16 @@ export class AssistenteIA {
           contexto += `Descrição: ${projeto.description || 'Sem descrição'}\n`;
           contexto += `Linguagem: ${projeto.language}\n`;
           contexto += `Caminho: ${projeto.path}\n`;
-          
+
           // Buscar TODOS os arquivos do projeto com estrutura completa
           const arquivos = await storage.getFiles(request.projetoId);
           if (arquivos.length > 0) {
             contexto += "\n## Estrutura Completa do Projeto:\n";
-            
+
             // Organizar arquivos por pastas
             const estrutura = this.organizarEstruturaProjeto(arquivos);
             contexto += this.formatarEstrutura(estrutura);
-            
+
             // Incluir conteúdo de todos os arquivos
             contexto += "\n## Conteúdo dos Arquivos:\n";
             for (const arquivo of arquivos) {
@@ -99,7 +98,7 @@ export class AssistenteIA {
       }
 
       const prompt = this.construirPrompt(request.mensagem, contexto);
-      
+
       const response = await openai.chat.completions.create({
         model: "gpt-4o",
         messages: [
@@ -121,7 +120,7 @@ export class AssistenteIA {
             Você pode ver e editar TODOS os arquivos do projeto. Use essas informações para dar respostas precisas.
 
             SEMPRE responda em português brasileiro.
-            
+
             Formato de resposta JSON:
             {
               "resposta": "explicação detalhada em português",
@@ -154,7 +153,7 @@ export class AssistenteIA {
       });
 
       const resultado = JSON.parse(response.choices[0].message.content || '{}');
-      
+
       // Aplicar mudanças no banco de dados
       if (request.projetoId) {
         // Atualizar arquivos modificados
@@ -197,11 +196,11 @@ export class AssistenteIA {
 
   private organizarEstruturaProjeto(arquivos: any[]): any {
     const estrutura: any = {};
-    
+
     for (const arquivo of arquivos) {
       const partes = arquivo.path.split('/').filter(Boolean);
       let atual = estrutura;
-      
+
       for (let i = 0; i < partes.length - 1; i++) {
         const pasta = partes[i];
         if (!atual[pasta]) {
@@ -209,7 +208,7 @@ export class AssistenteIA {
         }
         atual = atual[pasta];
       }
-      
+
       const nomeArquivo = partes[partes.length - 1] || arquivo.name;
       atual[nomeArquivo] = {
         tipo: 'arquivo',
@@ -218,14 +217,14 @@ export class AssistenteIA {
         id: arquivo.id
       };
     }
-    
+
     return estrutura;
   }
 
   private formatarEstrutura(estrutura: any, nivel = 0): string {
     let resultado = "";
     const indent = "  ".repeat(nivel);
-    
+
     for (const [nome, item] of Object.entries(estrutura)) {
       if (item && typeof item === 'object' && item.tipo === 'arquivo') {
         resultado += `${indent}📄 ${nome} (${item.linguagem || 'texto'})\n`;
@@ -236,7 +235,7 @@ export class AssistenteIA {
         }
       }
     }
-    
+
     return resultado;
   }
 
@@ -265,52 +264,126 @@ export class AssistenteIA {
       '.rb': 'ruby',
       '.sql': 'sql',
     };
-    
+
     return mapeamento[extensao] || 'text';
   }
 
   private construirPrompt(mensagem: string, contexto: string): string {
     let prompt = `Como assistente de programação com acesso COMPLETO ao projeto, preciso ajudar com: ${mensagem}\n`;
-    
+
     if (contexto) {
       prompt += `\nCONTEXTO COMPLETO DO PROJETO:${contexto}\n`;
     }
-    
+
     prompt += `\nCom base no contexto completo acima, analise a solicitação e:
     1. Entenda o que precisa ser feito
     2. Identifique quais arquivos precisam ser modificados ou criados
     3. Implemente as mudanças necessárias
     4. Forneça explicações claras sobre as alterações
     5. Garanta que o código funcione corretamente no contexto do projeto
-    
+
     Você tem acesso total ao projeto - use essas informações para dar a melhor resposta possível.`;
-    
+
     return prompt;
   }
 
   async analisarCodigo(codigo: string, linguagem: string): Promise<string> {
-    if (!openai) {
-      return "Assistente IA não configurado. Configure OPENAI_API_KEY.";
-    }
-
     try {
-      const response = await openai.chat.completions.create({
-        model: "gpt-4o",
-        messages: [
-          {
-            role: "system",
-            content: "Você é um especialista em análise de código. Analise o código fornecido e identifique possíveis melhorias, bugs, problemas de performance, e oportunidades de refatoração. Responda em português brasileiro com sugestões práticas."
-          },
-          {
-            role: "user",
-            content: `Analise este código ${linguagem} e forneça feedback detalhado:\n\n\`\`\`${linguagem}\n${codigo}\n\`\`\``
-          }
-        ],
+      const prompt = `
+        Analise o seguinte código ${linguagem} e forneça sugestões de melhoria:
+
+        \`\`\`${linguagem}
+        ${codigo}
+        \`\`\`
+
+        Foque em:
+        - Qualidade do código
+        - Performance
+        - Boas práticas
+        - Possíveis bugs
+        - Sugestões de refatoração
+      `;
+
+      const response = await this.openai.chat.completions.create({
+        model: "gpt-3.5-turbo",
+        messages: [{ role: "user", content: prompt }],
+        max_tokens: 1000,
+        temperature: 0.3,
       });
 
-      return response.choices[0].message.content || "Não foi possível analisar o código";
+      return response.choices[0]?.message?.content || "Não foi possível analisar o código.";
     } catch (error) {
-      return `Erro na análise: ${error.message}`;
+      console.error("Erro na análise de código:", error);
+      return "Erro ao analisar código. Verifique sua configuração da OpenAI.";
+    }
+  }
+
+  async acessarArquivo(arquivoId: number): Promise<any> {
+    try {
+      const { storage } = await import("./storage");
+      const arquivo = await storage.getFile(arquivoId);
+      return arquivo;
+    } catch (error) {
+      console.error("Erro ao acessar arquivo:", error);
+      throw new Error("Não foi possível acessar o arquivo");
+    }
+  }
+
+  async editarArquivo(arquivoId: number, novoConteudo: string): Promise<boolean> {
+    try {
+      const { storage } = await import("./storage");
+      const arquivo = await storage.updateFile(arquivoId, { content: novoConteudo });
+      return !!arquivo;
+    } catch (error) {
+      console.error("Erro ao editar arquivo:", error);
+      return false;
+    }
+  }
+
+  async listarArquivosProjeto(projetoId: number): Promise<any[]> {
+    try {
+      const { storage } = await import("./storage");
+      const arquivos = await storage.getFiles(projetoId);
+      return arquivos;
+    } catch (error) {
+      console.error("Erro ao listar arquivos:", error);
+      return [];
+    }
+  }
+
+  async analisarEstruturaProjeto(projetoId: number): Promise<string> {
+    try {
+      const arquivos = await this.listarArquivosProjeto(projetoId);
+
+      const estrutura = arquivos.map(arquivo => ({
+        nome: arquivo.name,
+        tipo: arquivo.language,
+        tamanho: arquivo.content?.length || 0
+      }));
+
+      const prompt = `
+        Analise a estrutura do projeto baseada nos seguintes arquivos:
+
+        ${JSON.stringify(estrutura, null, 2)}
+
+        Forneça:
+        - Análise da organização do projeto
+        - Sugestões de melhoria na estrutura
+        - Arquivos que podem estar faltando
+        - Boas práticas recomendadas
+      `;
+
+      const response = await this.openai.chat.completions.create({
+        model: "gpt-3.5-turbo",
+        messages: [{ role: "user", content: prompt }],
+        max_tokens: 1500,
+        temperature: 0.3,
+      });
+
+      return response.choices[0]?.message?.content || "Não foi possível analisar a estrutura.";
+    } catch (error) {
+      console.error("Erro na análise da estrutura:", error);
+      return "Erro ao analisar estrutura do projeto.";
     }
   }
 

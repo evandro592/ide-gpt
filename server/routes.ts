@@ -206,6 +206,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get('/api/ia/arquivo/:id', async (req, res) => {
+    try {
+      const { assistenteIA } = await import("./ai");
+      const id = parseInt(req.params.id);
+      const arquivo = await assistenteIA.acessarArquivo(id);
+      res.json(arquivo);
+    } catch (error) {
+      console.error("Erro ao IA acessar arquivo:", error);
+      res.status(500).json({ error: "Erro ao acessar arquivo" });
+    }
+  });
+
+  app.put('/api/ia/arquivo/:id', async (req, res) => {
+    try {
+      const { assistenteIA } = await import("./ai");
+      const id = parseInt(req.params.id);
+      const { conteudo } = req.body;
+      const sucesso = await assistenteIA.editarArquivo(id, conteudo);
+      
+      if (sucesso) {
+        res.json({ sucesso: true, mensagem: "Arquivo editado pela IA com sucesso" });
+      } else {
+        res.status(500).json({ error: "Falha ao editar arquivo" });
+      }
+    } catch (error) {
+      console.error("Erro ao IA editar arquivo:", error);
+      res.status(500).json({ error: "Erro ao editar arquivo" });
+    }
+  });
+
+  app.post('/api/ia/analisar-projeto/:id', async (req, res) => {
+    try {
+      const { assistenteIA } = await import("./ai");
+      const id = parseInt(req.params.id);
+      const analise = await assistenteIA.analisarEstruturaProjeto(id);
+      res.json({ analise });
+    } catch (error) {
+      console.error("Erro na análise do projeto:", error);
+      res.status(500).json({ error: "Erro na análise do projeto" });
+    }
+  });
+
   // Rota para verificar status da aplicação
   app.get('/api/status', (req, res) => {
     res.json({

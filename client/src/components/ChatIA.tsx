@@ -59,7 +59,7 @@ export function ChatIA({
     }),
     onSuccess: (resposta) => {
       setDigitando(false);
-      
+
       const novaMensagemIA: Mensagem = {
         id: Date.now().toString(),
         tipo: 'ia',
@@ -153,7 +153,7 @@ export function ChatIA({
           <h3 className="font-semibold">Assistente IA</h3>
           <Sparkles className="w-4 h-4 text-yellow-500" />
         </div>
-        
+
         {projetoAtivo && (
           <div className="text-sm text-muted-foreground">
             Projeto: {projetoAtivo.name}
@@ -199,7 +199,7 @@ export function ChatIA({
                 <div className="whitespace-pre-wrap text-sm">
                   {mensagem.conteudo}
                 </div>
-                
+
                 {/* Código gerado */}
                 {mensagem.codigo && (
                   <div className="mt-3 p-3 bg-background rounded border">
@@ -222,7 +222,7 @@ export function ChatIA({
                   </div>
                 )}
               </div>
-              
+
               <div className="text-xs text-muted-foreground mt-1">
                 {mensagem.timestamp.toLocaleTimeString('pt-BR')}
               </div>
@@ -290,7 +290,7 @@ export function ChatIA({
             <Send className="w-4 h-4" />
           </Button>
         </div>
-        
+
         <div className="flex justify-between items-center mt-2 text-xs text-muted-foreground">
           <span>Pressione Enter para enviar</span>
           {codigoSelecionado && (
