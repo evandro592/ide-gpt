@@ -52,7 +52,10 @@ export function ChatIA({
   const enviarMensagemMutation = useMutation({
     mutationFn: (dados: any) => apiRequest('/api/chat', {
       method: 'POST',
-      body: JSON.stringify(dados),
+      body: JSON.stringify({
+        ...dados,
+        acessarPastas: true // Sempre permitir acesso às pastas
+      }),
     }),
     onSuccess: (resposta) => {
       setDigitando(false);
@@ -79,6 +82,14 @@ export function ChatIA({
             onFileModified(arquivoAtivo, arquivo.novoConteudo);
           }
         });
+      }
+
+      // Se novos arquivos foram criados, mostrar notificação
+      if (resposta.arquivosCriados && resposta.arquivosCriados.length > 0) {
+        const arquivosCriados = resposta.arquivosCriados.map((a: any) => a.nome).join(', ');
+        console.log(`✅ Arquivos criados: ${arquivosCriados}`);
+        // Atualizar a interface para mostrar os novos arquivos
+        window.location.reload(); // Forçar reload para mostrar novos arquivos
       }
     },
     onError: (error) => {
