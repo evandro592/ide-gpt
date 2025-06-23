@@ -1,4 +1,6 @@
 @echo off
+color 0A
+set STEP=1
 title IDE Português - Configurar OpenAI
 echo.
 echo ========================================
@@ -12,14 +14,20 @@ echo 2. Faça login ou crie uma conta
 echo 3. Clique em "Create new secret key"
 echo 4. Copie a chave gerada
 echo.
+echo PASSO %STEP%: Informe sua chave OpenAI.
 set /p openai_key="Cole sua chave OpenAI aqui: "
 
 if "%openai_key%"=="" (
+    color 0C
     echo.
     echo Nenhuma chave fornecida. Saindo...
     pause
     exit /b 1
 )
+color 0A
+set /a STEP+=1
+echo.
+echo PASSO %STEP%: Gravando arquivo de configuração...
 
 rem Criar arquivo .env se não existir
 echo OPENAI_API_KEY=%openai_key% > .env
@@ -37,4 +45,6 @@ echo - Fornecer explicações detalhadas
 echo.
 echo Reinicie o IDE para aplicar as configurações.
 echo.
+color 0E
+echo PASSO FINAL: Configuração concluída. Pressione qualquer tecla para sair.
 pause
