@@ -47,5 +47,6 @@ echo ========================================
 timeout /t 3 /nobreak >nul
 start http://localhost:5000
 
-:: Iniciar servidor
-npm run dev:windows
+:: Iniciar servidor Windows
+set NODE_ENV=development
+npx tsx server/index.ts
