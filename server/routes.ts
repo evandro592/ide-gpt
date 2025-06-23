@@ -29,11 +29,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       const projeto = await storage.getProject(id);
-      
+
       if (!projeto) {
         return res.status(404).json({ error: "Projeto não encontrado" });
       }
-      
+
       res.json(projeto);
     } catch (error) {
       console.error("Erro ao buscar projeto:", error);
@@ -60,11 +60,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const id = parseInt(req.params.id);
       const dados = insertProjectSchema.partial().parse(req.body);
       const projeto = await storage.updateProject(id, dados);
-      
+
       if (!projeto) {
         return res.status(404).json({ error: "Projeto não encontrado" });
       }
-      
+
       res.json(projeto);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -79,11 +79,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       const sucesso = await storage.deleteProject(id);
-      
+
       if (!sucesso) {
         return res.status(404).json({ error: "Projeto não encontrado" });
       }
-      
+
       res.status(204).send();
     } catch (error) {
       console.error("Erro ao deletar projeto:", error);
@@ -107,11 +107,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       const arquivo = await storage.getFile(id);
-      
+
       if (!arquivo) {
         return res.status(404).json({ error: "Arquivo não encontrado" });
       }
-      
+
       res.json(arquivo);
     } catch (error) {
       console.error("Erro ao buscar arquivo:", error);
@@ -138,11 +138,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const id = parseInt(req.params.id);
       const dados = insertFileSchema.partial().parse(req.body);
       const arquivo = await storage.updateFile(id, dados);
-      
+
       if (!arquivo) {
         return res.status(404).json({ error: "Arquivo não encontrado" });
       }
-      
+
       res.json(arquivo);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -157,11 +157,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       const sucesso = await storage.deleteFile(id);
-      
+
       if (!sucesso) {
         return res.status(404).json({ error: "Arquivo não encontrado" });
       }
-      
+
       res.status(204).send();
     } catch (error) {
       console.error("Erro ao deletar arquivo:", error);
@@ -224,7 +224,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const id = parseInt(req.params.id);
       const { conteudo } = req.body;
       const sucesso = await assistenteIA.editarArquivo(id, conteudo);
-      
+
       if (sucesso) {
         res.json({ sucesso: true, mensagem: "Arquivo editado pela IA com sucesso" });
       } else {
@@ -435,7 +435,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         <span style="font-size: 12px;">🤖 IA: Ativa</span>
       </div>
     </div>
-    
+
     <!-- Sidebar -->
     <div class="sidebar">
       <div class="section-header">Projetos</div>
@@ -446,7 +446,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         </div>
         <button class="btn" style="margin: 10px 0; width: 100%;" onclick="criarProjeto()">+ Novo Projeto</button>
       </div>
-      
+
       <div class="section-header">Arquivos</div>
       <div class="file-tree">
         <div class="file-item" onclick="abrirArquivo('index.js', this)">
@@ -464,7 +464,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         <button class="btn" style="margin: 10px 0; width: 100%;" onclick="criarArquivo()">+ Novo Arquivo</button>
       </div>
     </div>
-    
+
     <!-- Editor Area -->
     <div class="editor-area">
       <div class="editor-content">
@@ -483,7 +483,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         </div>
       </div>
     </div>
-    
+
     <!-- Chat Area -->
     <div class="chat-area">
       <div class="section-header">🤖 Assistente IA</div>
@@ -505,11 +505,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       </div>
     </div>
   </div>
-  
+
   <div class="status-bar">
     IDE em Português v1.0 | Porta 5000 | Todas as funcionalidades ativas | Desenvolvido em português
   </div>
-  
+
   <script>
     const arquivos = {
       'index.js': \`// Arquivo de exemplo - IDE em Português
@@ -528,7 +528,7 @@ function calcularIdade(nascimento) {
 }
 
 module.exports = { saudacao, calcularIdade };\`,
-      
+
       'package.json': \`{
   "name": "projeto-exemplo",
   "version": "1.0.0",
@@ -542,7 +542,7 @@ module.exports = { saudacao, calcularIdade };\`,
   "author": "IDE Português",
   "license": "MIT"
 }\`,
-      
+
       'README.md': \`# Projeto Exemplo
 
 Este é um projeto de demonstração criado no **IDE em Português**.
@@ -564,12 +564,12 @@ Este é um projeto de demonstração criado no **IDE em Português**.
 
 **Desenvolvido com amor em português! 🇧🇷**\`
     };
-    
+
     function abrirArquivo(nome, elemento) {
       // Remove active de outros arquivos
       document.querySelectorAll('.file-item').forEach(item => item.classList.remove('active'));
       elemento.classList.add('active');
-      
+
       const editorContent = document.querySelector('.editor-content');
       editorContent.innerHTML = \`
         <div style="width: 100%; height: 100%; display: flex; flex-direction: column;">
@@ -584,7 +584,7 @@ Este é um projeto de demonstração criado no **IDE em Português**.
         </div>
       \`;
     }
-    
+
     function criarProjeto() {
       const nome = prompt('Nome do novo projeto:');
       if (nome) {
@@ -603,13 +603,13 @@ Este é um projeto de demonstração criado no **IDE em Português**.
         });
       }
     }
-    
+
     function criarArquivo() {
       const nome = prompt('Nome do novo arquivo (ex: app.js):');
       if (nome) {
         arquivos[nome] = '// Novo arquivo criado\\n\\n';
         alert('✅ Arquivo "' + nome + '" criado!');
-        
+
         // Adicionar à lista
         const fileTree = document.querySelector('.file-tree');
         const newFile = document.createElement('div');
@@ -619,18 +619,18 @@ Este é um projeto de demonstração criado no **IDE em Português**.
         fileTree.insertBefore(newFile, fileTree.querySelector('button'));
       }
     }
-    
+
     function salvarArquivo() {
       alert('💾 Arquivo salvo com sucesso!');
     }
-    
+
     function analisarIA() {
       adicionarMensagem('user', 'Analise este código e sugira melhorias');
       setTimeout(() => {
         adicionarMensagem('ai', '✅ Análise concluída! Seu código está bem estruturado. Sugestões: adicionar tratamento de erro, documentação JSDoc e testes unitários. Posso implementar essas melhorias automaticamente se desejar.');
       }, 1000);
     }
-    
+
     function enviarMensagem(event) {
       if (event.key === 'Enter') {
         const input = event.target;
@@ -638,7 +638,7 @@ Este é um projeto de demonstração criado no **IDE em Português**.
         if (mensagem) {
           adicionarMensagem('user', mensagem);
           input.value = '';
-          
+
           // Simular resposta da IA
           setTimeout(() => {
             let resposta = 'Entendi sua solicitação! ';
@@ -656,7 +656,7 @@ Este é um projeto de demonstração criado no **IDE em Português**.
         }
       }
     }
-    
+
     function adicionarMensagem(tipo, texto) {
       const chatMessages = document.querySelector('.chat-messages');
       const mensagem = document.createElement('div');
@@ -665,7 +665,7 @@ Este é um projeto de demonstração criado no **IDE em Português**.
       chatMessages.appendChild(mensagem);
       chatMessages.scrollTop = chatMessages.scrollHeight;
     }
-    
+
     // Abrir arquivo padrão após carregar
     setTimeout(() => {
       document.querySelector('.file-item').click();

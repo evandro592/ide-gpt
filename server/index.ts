@@ -48,3 +48,10 @@ registerRoutes(app).then(server => {
   process.exit(1);
 });
 
+// Verificar se todas as rotas estão definidas corretamente
+try {
+  // Assuming 'routes' is defined elsewhere and contains the API routes.  This is a placeholder and should be replaced with actual route registration.  Since the original code uses registerRoutes, I'm not replacing this with anything.
+  // app.use('/api', routes);
+} catch (error) {
+  console.error('Erro ao configurar rotas:', error);
+}

@@ -1,4 +1,6 @@
+
 @echo off
+chcp 65001 > nul
 title IDE Português - Versão Local
 echo.
 echo ========================================
@@ -6,8 +8,14 @@ echo    IDE em Português - Versão Local
 echo    (Funciona sem banco de dados)
 echo ========================================
 echo.
-echo Iniciando servidor local...
-echo.
+
+rem Verificar se estamos no diretório correto
+if not exist "package.json" (
+    echo ERRO: Execute este arquivo na pasta do projeto!
+    echo Certifique-se de estar na pasta que contém package.json
+    pause
+    exit /b 1
+)
 
 rem Verificar se Node.js está instalado
 node --version >nul 2>&1
@@ -18,19 +26,26 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
-rem Instalar dependências se necessário
+echo Verificando dependências...
 if not exist "node_modules" (
     echo Instalando dependências...
     npm install
+    if %errorlevel% neq 0 (
+        echo ERRO: Falha ao instalar dependências!
+        pause
+        exit /b 1
+    )
     echo.
 )
 
-rem Iniciar o servidor local
-echo Servidor local iniciando na porta 5000...
 echo.
+echo Iniciando servidor local...
 echo Acesse: http://localhost:5000
 echo.
 echo Para parar o servidor, pressione Ctrl+C
 echo.
 
+rem Iniciar o servidor local
 npx tsx server/local-server.ts
+
+pause
