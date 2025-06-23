@@ -1,19 +1,28 @@
+<<<<<<< HEAD
 modules = ["nodejs-20", "web", "postgresql-16"]
 run = "npm run dev"
 hidden = [".config", ".git", "generated-icon.png", "node_modules", "dist"]
+=======
+modules = ["nodejs-20", "web"]
+run = "npm run dev"
+>>>>>>> 796ea9e3a6d38e397dfb71035ce80b292c042103
 
 [nix]
 channel = "stable-24_05"
 
+<<<<<<< HEAD
 [deployment]
 deploymentTarget = "autoscale"
 build = ["npm", "run", "build"]
 run = ["npm", "run", "start"]
 
+=======
+>>>>>>> 796ea9e3a6d38e397dfb71035ce80b292c042103
 [[ports]]
 localPort = 5000
 externalPort = 80
 
+<<<<<<< HEAD
 [workflows]
 runButton = "Project"
 
@@ -34,3 +43,19 @@ author = "agent"
 task = "shell.exec"
 args = "npm run dev"
 waitForPort = 5000
+=======
+[deployment]
+run = ["sh", "-c", "npm run dev"]
+
+[workflows]
+runButton = "Servidor Local"
+
+[[workflows.workflow]]
+name = "Servidor Local"
+author = 44162379
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx tsx server/local-server.ts"
+>>>>>>> 796ea9e3a6d38e397dfb71035ce80b292c042103

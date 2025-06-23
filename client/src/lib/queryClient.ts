@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
 
 async function throwIfResNotOk(res: Response) {
@@ -40,10 +41,14 @@ export const getQueryFn: <T>(options: {
     await throwIfResNotOk(res);
     return await res.json();
   };
+=======
+import { QueryClient } from '@tanstack/react-query';
+>>>>>>> 796ea9e3a6d38e397dfb71035ce80b292c042103
 
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
+<<<<<<< HEAD
       queryFn: getQueryFn({ on401: "throw" }),
       refetchInterval: false,
       refetchOnWindowFocus: false,
@@ -55,3 +60,27 @@ export const queryClient = new QueryClient({
     },
   },
 });
+=======
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
+
+export async function apiRequest(url: string, options: RequestInit = {}) {
+  const response = await fetch(url, {
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+    ...options,
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`${response.status}: ${error}`);
+  }
+
+  return response.json();
+}
+>>>>>>> 796ea9e3a6d38e397dfb71035ce80b292c042103
