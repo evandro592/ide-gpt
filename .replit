@@ -10,3 +10,15 @@ externalPort = 80
 
 [deployment]
 run = ["sh", "-c", "npm run dev"]
+
+[workflows]
+runButton = "Servidor Local"
+
+[[workflows.workflow]]
+name = "Servidor Local"
+author = 44162379
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "tsx server/index.ts"
