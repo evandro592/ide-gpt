@@ -2,6 +2,8 @@ import fs from 'fs/promises';
 import path from 'path';
 import { File } from '@shared/schema';
 
+const projectRoot = process.cwd();
+
 export interface FileSystemNode {
   name: string;
   path: string;
@@ -65,7 +67,10 @@ export async function readProjectDirectory(projectPath: string = process.cwd()):
 
 export async function readFileContent(filePath: string): Promise<string> {
   try {
-    const fullPath = path.resolve(process.cwd(), filePath.startsWith('/') ? filePath.slice(1) : filePath);
+    const fullPath = path.resolve(projectRoot, filePath.startsWith('/') ? filePath.slice(1) : filePath);
+    if (!fullPath.startsWith(projectRoot)) {
+      throw new Error('Invalid file path');
+    }
     const content = await fs.readFile(fullPath, 'utf-8');
     return content;
   } catch (error) {
@@ -75,7 +80,10 @@ export async function readFileContent(filePath: string): Promise<string> {
 
 export async function writeFileContent(filePath: string, content: string): Promise<void> {
   try {
-    const fullPath = path.resolve(process.cwd(), filePath.startsWith('/') ? filePath.slice(1) : filePath);
+    const fullPath = path.resolve(projectRoot, filePath.startsWith('/') ? filePath.slice(1) : filePath);
+    if (!fullPath.startsWith(projectRoot)) {
+      throw new Error('Invalid file path');
+    }
     const dir = path.dirname(fullPath);
     
     // Ensure directory exists
@@ -89,7 +97,10 @@ export async function writeFileContent(filePath: string, content: string): Promi
 
 export async function createDirectory(dirPath: string): Promise<void> {
   try {
-    const fullPath = path.resolve(process.cwd(), dirPath.startsWith('/') ? dirPath.slice(1) : dirPath);
+    const fullPath = path.resolve(projectRoot, dirPath.startsWith('/') ? dirPath.slice(1) : dirPath);
+    if (!fullPath.startsWith(projectRoot)) {
+      throw new Error('Invalid directory path');
+    }
     await fs.mkdir(fullPath, { recursive: true });
   } catch (error) {
     throw new Error(`Failed to create directory ${dirPath}: ${(error as Error).message}`);
@@ -98,7 +109,10 @@ export async function createDirectory(dirPath: string): Promise<void> {
 
 export async function deleteFileOrDirectory(filePath: string): Promise<void> {
   try {
-    const fullPath = path.resolve(process.cwd(), filePath.startsWith('/') ? filePath.slice(1) : filePath);
+    const fullPath = path.resolve(projectRoot, filePath.startsWith('/') ? filePath.slice(1) : filePath);
+    if (!fullPath.startsWith(projectRoot)) {
+      throw new Error('Invalid file path');
+    }
     const stats = await fs.stat(fullPath);
     
     if (stats.isDirectory()) {

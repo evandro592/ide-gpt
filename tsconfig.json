@@ -1,5 +1,4 @@
 {
-<<<<<<< HEAD
   "include": ["client/src/**/*", "shared/**/*", "server/**/*"],
   "exclude": ["node_modules", "build", "dist", "**/*.test.ts"],
   "compilerOptions": {
@@ -16,34 +15,9 @@
     "moduleResolution": "bundler",
     "baseUrl": ".",
     "types": ["node", "vite/client"],
-=======
-  "compilerOptions": {
-    "target": "ES2022",
-    "lib": ["ES2023"],
-    "module": "ESNext",
-    "skipLibCheck": true,
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx",
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "baseUrl": ".",
->>>>>>> 796ea9e3a6d38e397dfb71035ce80b292c042103
     "paths": {
       "@/*": ["./client/src/*"],
       "@shared/*": ["./shared/*"]
     }
-<<<<<<< HEAD
   }
 }
-=======
-  },
-  "include": ["client/src", "shared", "server"],
-  "references": [{ "path": "./tsconfig.node.json" }]
-}
->>>>>>> 796ea9e3a6d38e397dfb71035ce80b292c042103
